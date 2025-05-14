@@ -1109,7 +1109,7 @@ elif feature == "🧠 Crypto Puzzle Game":
         if guess.strip().lower() == selected['answer'].lower():
             st.success("🎉 Correct! You're a crypto genius!")
         else:
-            st.error("❌ Nope! Try again, hacker cutie~ 💔")
+            st.error("❌ Nope! Try again,  hacker 💔")
 
 
 
