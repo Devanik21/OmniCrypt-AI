@@ -45,8 +45,14 @@ feature = st.sidebar.selectbox(
      "⏱️ Hash Speed Test",
      "🔍 File Hash Verification",
      "🌐 JWT Token Inspector",
-     "🔒 SSH Key Manager"]
+     "🔒 SSH Key Manager",
+     "🕵️ Cipher Identifier",
+     "🧮 Modular Calculator",
+     "🔁 Base Converter",
+     "📦 Steganography Tool",
+     "🧠 Crypto Puzzle Game"]
 )
+
 
 # --- 1. AES Encrypt/Decrypt ---
 if feature == "🔐 AES Encrypt/Decrypt":
@@ -1007,6 +1013,145 @@ elif feature == "🔒 SSH Key Manager":
         - Regularly audit and rotate SSH keys
         - Consider using certificate-based authentication for large deployments
         """)
+
+elif feature == "🕵️ Cipher Identifier":
+    st.header("🕵️ Cipher Pattern Identifier")
+    st.markdown("Paste ciphertext and get a guess of the cipher type based on its structure.")
+
+    ciphertext = st.text_area("Enter Ciphertext")
+
+    if st.button("Analyze Cipher"):
+        if ciphertext:
+            guess = ""
+            if all(c.isupper() or c.isspace() for c in ciphertext):
+                guess = "Possibly Caesar or Vigenère Cipher"
+            elif all(c.isalnum() or c in ['/', '+', '='] for c in ciphertext.strip()):
+                guess = "Possibly Base64-encoded"
+            elif all(c in "01" for c in ciphertext.strip()):
+                guess = "Binary-encoded data"
+            elif ciphertext.startswith("-----BEGIN") and "KEY" in ciphertext:
+                guess = "PEM-formatted key (e.g., RSA, ECC)"
+            else:
+                guess = "Could not confidently identify. Might be encrypted or encoded."
+
+            st.info(f"🔍 Guess: **{guess}**")
+
+
+elif feature == "🧮 Modular Calculator":
+    st.header("🧮 Modular Arithmetic Calculator")
+
+    a = st.number_input("Enter A", value=17)
+    b = st.number_input("Enter B", value=5)
+    mod = st.number_input("Modulus", value=7)
+    operation = st.selectbox("Operation", ["Addition", "Subtraction", "Multiplication", "Exponentiation", "Inverse"])
+
+    if st.button("Calculate"):
+        try:
+            if operation == "Addition":
+                result = (a + b) % mod
+            elif operation == "Subtraction":
+                result = (a - b) % mod
+            elif operation == "Multiplication":
+                result = (a * b) % mod
+            elif operation == "Exponentiation":
+                result = pow(a, b, mod)
+            elif operation == "Inverse":
+                result = pow(int(a), -1, int(mod))
+            st.success(f"🧠 Result: {result}")
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+
+elif feature == "🔁 Base Converter":
+    st.header("🔁 Number Base Converter")
+
+    num = st.text_input("Enter Number")
+    input_base = st.selectbox("Input Base", [2, 8, 10, 16], index=2)
+    output_base = st.selectbox("Output Base", [2, 8, 10, 16], index=0)
+
+    if st.button("Convert"):
+        try:
+            dec = int(num, input_base)
+            if output_base == 2:
+                result = bin(dec)[2:]
+            elif output_base == 8:
+                result = oct(dec)[2:]
+            elif output_base == 10:
+                result = str(dec)
+            elif output_base == 16:
+                result = hex(dec)[2:]
+            st.code(result.upper())
+        except Exception as e:
+            st.error(f"Conversion failed: {e}")
+
+
+
+
+from PIL import Image
+import numpy as np
+
+elif feature == "📦 Steganography Tool":
+    st.header("📦 Hide Text in Image (Steganography)")
+
+    steg_mode = st.radio("Choose Mode", ["Encode Text into Image", "Decode Text from Image"])
+    
+    if steg_mode == "Encode Text into Image":
+        image = st.file_uploader("Upload Image", type=["png"])
+        secret_text = st.text_area("Secret Message")
+
+        if image and secret_text and st.button("Encode"):
+            img = Image.open(image).convert("RGB")
+            data = np.array(img)
+            flat = data.flatten()
+            binary_text = ''.join(format(ord(c), '08b') for c in secret_text) + '00000000'
+            if len(binary_text) > len(flat):
+                st.error("Message too long for image.")
+            else:
+                for i in range(len(binary_text)):
+                    flat[i] = (flat[i] & ~1) | int(binary_text[i])
+                encoded = Image.fromarray(flat.reshape(data.shape))
+                buf = io.BytesIO()
+                encoded.save(buf, format="PNG")
+                st.download_button("Download Encoded Image", buf.getvalue(), file_name="stego.png")
+                st.success("✅ Text encoded into image.")
+    
+    else:
+        image = st.file_uploader("Upload Stego Image", type=["png"])
+        if image and st.button("Decode"):
+            img = Image.open(image)
+            data = np.array(img).flatten()
+            bits = [str(d & 1) for d in data]
+            chars = []
+            for i in range(0, len(bits), 8):
+                byte = ''.join(bits[i:i+8])
+                if byte == '00000000':
+                    break
+                chars.append(chr(int(byte, 2)))
+            st.text_area("Decoded Message", value=''.join(chars), height=150)
+
+
+elif feature == "🧠 Crypto Puzzle Game":
+    st.header("🧠 Crypto Puzzle Challenge")
+
+    puzzles = [
+        {"question": "Decrypt this Caesar cipher: 'Wklv lv ixq!'", "answer": "This is fun"},
+        {"question": "What algorithm uses modulo arithmetic and a public-private keypair?", "answer": "RSA"},
+        {"question": "Convert this hex to ASCII: 48656c6c6f", "answer": "Hello"},
+        {"question": "Identify: Ciphertext with 'MIIB' and 'KEY' headers", "answer": "RSA Key"},
+    ]
+
+    selected = random.choice(puzzles)
+    st.markdown(f"🧩 Puzzle: {selected['question']}")
+
+    guess = st.text_input("Your Answer")
+
+    if st.button("Submit Answer"):
+        if guess.strip().lower() == selected['answer'].lower():
+            st.success("🎉 Correct! You're a crypto genius!")
+        else:
+            st.error("❌ Nope! Try again, hacker cutie~ 💔")
+
+
 
 st.markdown("---")
 st.caption("Built with ❤️ using PyCryptodome, Streamlit, and Gemini AI.")
