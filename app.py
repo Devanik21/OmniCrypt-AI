@@ -17,6 +17,8 @@ import random
 import string
 import requests
 import datetime
+from PIL import Image
+import numpy as np
 import hashlib
 
 # --- Streamlit UI ---
@@ -1085,10 +1087,6 @@ elif feature == "🔁 Base Converter":
             st.error(f"Conversion failed: {e}")
 
 
-
-
-from PIL import Image
-import numpy as np
 
 elif feature == "📦 Steganography Tool":
     st.header("📦 Hide Text in Image (Steganography)")
