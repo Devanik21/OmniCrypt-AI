@@ -51,7 +51,7 @@ feature = st.sidebar.selectbox(
      "🕵️ Cipher Identifier",
      "🧮 Modular Calculator",
      "🔁 Base Converter",
-     "📦 Steganography Tool",
+     
      "🧠 Crypto Puzzle Game"]
 )
 
@@ -1088,44 +1088,6 @@ elif feature == "🔁 Base Converter":
 
 
 
-elif feature == "📦 Steganography Tool":
-    st.header("📦 Hide Text in Image (Steganography)")
-
-    steg_mode = st.radio("Choose Mode", ["Encode Text into Image", "Decode Text from Image"])
-    
-    if steg_mode == "Encode Text into Image":
-        image = st.file_uploader("Upload Image", type=["png"])
-        secret_text = st.text_area("Secret Message")
-
-        if image and secret_text and st.button("Encode"):
-            img = Image.open(image).convert("RGB")
-            data = np.array(img)
-            flat = data.flatten()
-            binary_text = ''.join(format(ord(c), '08b') for c in secret_text) + '00000000'
-            if len(binary_text) > len(flat):
-                st.error("Message too long for image.")
-            else:
-                for i in range(len(binary_text)):
-                    flat[i] = (flat[i] & ~1) | int(binary_text[i])
-                encoded = Image.fromarray(flat.reshape(data.shape))
-                buf = io.BytesIO()
-                encoded.save(buf, format="PNG")
-                st.download_button("Download Encoded Image", buf.getvalue(), file_name="stego.png")
-                st.success("✅ Text encoded into image.")
-    
-    else:
-        image = st.file_uploader("Upload Stego Image", type=["png"])
-        if image and st.button("Decode"):
-            img = Image.open(image)
-            data = np.array(img).flatten()
-            bits = [str(d & 1) for d in data]
-            chars = []
-            for i in range(0, len(bits), 8):
-                byte = ''.join(bits[i:i+8])
-                if byte == '00000000':
-                    break
-                chars.append(chr(int(byte, 2)))
-            st.text_area("Decoded Message", value=''.join(chars), height=150)
 
 
 elif feature == "🧠 Crypto Puzzle Game":
