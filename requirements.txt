@@ -1,0 +1,7 @@
+streamlit
+pycryptodome
+google-generativeai
+pandas
+matplotlib
+qrcode
+pillow
