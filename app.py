@@ -13,6 +13,11 @@ from Crypto.Protocol.KDF import PBKDF2, scrypt
 import google.generativeai as genai
 import pandas as pd
 import matplotlib.pyplot as plt
+import random
+import string
+import requests
+import datetime
+import hashlib
 
 # --- Streamlit UI ---
 st.set_page_config("CryptX", layout="wide",page_icon="🔐")
@@ -35,7 +40,12 @@ feature = st.sidebar.selectbox(
      "🔑 Password Strength Analyzer",
      "📊 Encryption Benchmark",
      "📱 QR Code Generator",
-     "🔄 Format Converter"]
+     "🔄 Format Converter",
+     "🎲 Secure Password Generator",
+     "⏱️ Hash Speed Test",
+     "🔍 File Hash Verification",
+     "🌐 JWT Token Inspector",
+     "🔒 SSH Key Manager"]
 )
 
 # --- 1. AES Encrypt/Decrypt ---
@@ -537,6 +547,466 @@ elif feature == "🔄 Format Converter":
                     st.code(result)
                 except Exception as e:
                     st.error(f"Conversion error: {str(e)}")
+
+# --- 10. Secure Password Generator (NEW FEATURE) ---
+elif feature == "🎲 Secure Password Generator":
+    st.header("🎲 Secure Password Generator")
+    
+    # Password generation options
+    length = st.slider("Password Length", 8, 64, 16)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        include_uppercase = st.checkbox("Include Uppercase Letters", value=True)
+        include_lowercase = st.checkbox("Include Lowercase Letters", value=True)
+    
+    with col2:
+        include_numbers = st.checkbox("Include Numbers", value=True)
+        include_special = st.checkbox("Include Special Characters", value=True)
+    
+    # Advanced options
+    with st.expander("Advanced Options"):
+        exclude_similar = st.checkbox("Exclude Similar Characters (i, l, 1, o, 0)", value=True)
+        exclude_ambiguous = st.checkbox("Exclude Ambiguous Characters ({}[]()/\\'\"`~,;:.<>)", value=True)
+        word_based = st.checkbox("Generate Word-Based Password (Easier to Remember)", value=False)
+    
+    if st.button("Generate Password"):
+        if not any([include_uppercase, include_lowercase, include_numbers, include_special]):
+            st.error("Please select at least one character type")
+        else:
+            # Define character sets
+            chars = ""
+            
+            if include_uppercase:
+                chars += string.ascii_uppercase
+            if include_lowercase:
+                chars += string.ascii_lowercase
+            if include_numbers:
+                chars += string.digits
+            if include_special:
+                chars += "!@#$%^&*()-_=+[]{}|;:,.<>?"
+            
+            # Apply exclusions
+            if exclude_similar:
+                for c in "il1oO0":
+                    chars = chars.replace(c, "")
+            
+            if exclude_ambiguous:
+                for c in "{}[]()/\\'\"`~,;:.<>":
+                    chars = chars.replace(c, "")
+            
+            # Generate password
+            if word_based:
+                # Simple word-based password generation
+                # (In a real implementation, you'd use a dictionary file)
+                sample_words = ["apple", "banana", "orange", "grape", "lemon", "peach", 
+                               "mountain", "river", "ocean", "forest", "valley", "canyon",
+                               "happy", "brave", "calm", "eager", "gentle", "kind"]
+                
+                # Generate password by combining words and numbers
+                words = random.sample(sample_words, 3)
+                separators = [".", "-", "_", "!", "#", "$", "%", "&"] if include_special else [".", "-", "_"]
+                separator = random.choice(separators)
+                
+                if include_numbers:
+                    numbers = ''.join(random.choice(string.digits) for _ in range(2))
+                    password = separator.join(words) + separator + numbers
+                else:
+                    password = separator.join(words)
+                
+                # Ensure it meets length requirements
+                if len(password) > length:
+                    password = password[:length]
+                    
+                # Add capital letters if needed
+                if include_uppercase:
+                    password = ''.join(c.upper() if random.random() < 0.2 else c for c in password)
+                
+                st.code(password)
+                
+                # Calculate entropy
+                entropy = len(password) * 8  # Simplified calculation
+                
+            else:
+                # Generate random character password
+                if chars:
+                    password = ''.join(random.choice(chars) for _ in range(length))
+                    st.code(password)
+                    
+                    # Calculate entropy: log2(possible_chars) * length
+                    entropy = length * (len(chars).bit_length())
+            
+            # Security rating based on entropy
+            if entropy < 50:
+                security_level = "Low"
+                color = "red"
+            elif entropy < 80:
+                security_level = "Medium"
+                color = "orange"
+            elif entropy < 100:
+                security_level = "High"
+                color = "blue"
+            else:
+                security_level = "Very High"
+                color = "green"
+                
+            st.markdown(f"**Password Entropy:** ~{entropy} bits")
+            st.markdown(f"**Security Level:** <span style='color:{color};font-weight:bold'>{security_level}</span>", unsafe_allow_html=True)
+            
+            # One-click copy
+            st.text_input("Copy your password:", value=password)
+            
+# --- 11. Hash Speed Test (NEW FEATURE) ---
+elif feature == "⏱️ Hash Speed Test":
+    st.header("⏱️ Hash Algorithm Speed Test")
+    
+    hash_algorithms = ["SHA-256", "SHA-512", "SHA3-256", "BLAKE2b"]
+    test_algorithm = st.selectbox("Select Hash Algorithm", hash_algorithms)
+    
+    data_size = st.select_slider(
+        "Data Size",
+        options=[
+            "1 KB", "10 KB", "100 KB", "1 MB", "10 MB"
+        ],
+        value="1 MB"
+    )
+    
+    # Convert size string to bytes
+    size_map = {
+        "1 KB": 1024,
+        "10 KB": 10 * 1024,
+        "100 KB": 100 * 1024,
+        "1 MB": 1024 * 1024,
+        "10 MB": 10 * 1024 * 1024
+    }
+    
+    byte_size = size_map[data_size]
+    
+    if st.button("Run Speed Test"):
+        with st.spinner(f"Testing {test_algorithm} on {data_size} of data..."):
+            # Generate random data
+            test_data = get_random_bytes(byte_size)
+            
+            # Create hash function
+            start_time = datetime.datetime.now()
+            
+            # Hash the data with selected algorithm
+            if test_algorithm == "SHA-256":
+                for _ in range(5):  # Run multiple times for more accurate measurement
+                    h = hashlib.sha256(test_data).digest()
+            elif test_algorithm == "SHA-512":
+                for _ in range(5):
+                    h = hashlib.sha512(test_data).digest()
+            elif test_algorithm == "SHA3-256":
+                for _ in range(5):
+                    h = hashlib.sha3_256(test_data).digest()
+            elif test_algorithm == "BLAKE2b":
+                for _ in range(5):
+                    h = hashlib.blake2b(test_data).digest()
+            
+            end_time = datetime.datetime.now()
+            duration = (end_time - start_time).total_seconds()
+            
+            # Calculate speed
+            speed_mbps = (byte_size * 5) / (1024 * 1024) / duration  # Speed in MB/s
+            
+            # Display results
+            st.success(f"Test completed in {duration:.4f} seconds")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Speed", f"{speed_mbps:.2f} MB/s")
+            with col2:
+                st.metric("Data Processed", data_size)
+            
+            # Display hash sample
+            st.code(h.hex()[:32] + "...", language="bash")
+            
+            # Compare with other algorithms (static comparison)
+            st.subheader("Algorithm Comparison")
+            
+            comparison_data = {
+                "Algorithm": ["SHA-256", "SHA-512", "SHA3-256", "BLAKE2b"],
+                "Relative Speed": [1.0, 0.7, 0.9, 1.3],
+                "Security Level": ["High", "Very High", "Very High", "High"]
+            }
+            
+            df = pd.DataFrame(comparison_data)
+            st.dataframe(df)
+            
+            with st.expander("Security Considerations"):
+                st.markdown("""
+                - **SHA-256**: Widely used, good balance of speed and security
+                - **SHA-512**: More secure than SHA-256 for longer-term security
+                - **SHA3-256**: Newer algorithm with different internal structure than SHA-2 family
+                - **BLAKE2b**: High-performance hash focused on speed while maintaining security
+                """)
+
+# --- 12. File Hash Verification (NEW FEATURE) ---
+elif feature == "🔍 File Hash Verification":
+    st.header("🔍 File Hash Verification")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # File upload for hashing
+        uploaded_file = st.file_uploader("Upload file to hash")
+        hash_algorithm = st.selectbox("Hash Algorithm", ["MD5", "SHA-1", "SHA-256", "SHA3-256"])
+        
+        if uploaded_file and st.button("Calculate Hash"):
+            # Read file content
+            content = uploaded_file.read()
+            
+            # Calculate hash based on selected algorithm
+            if hash_algorithm == "MD5":
+                file_hash = hashlib.md5(content).hexdigest()
+            elif hash_algorithm == "SHA-1":
+                file_hash = hashlib.sha1(content).hexdigest()
+            elif hash_algorithm == "SHA-256":
+                file_hash = hashlib.sha256(content).hexdigest()
+            elif hash_algorithm == "SHA3-256":
+                file_hash = hashlib.sha3_256(content).hexdigest()
+            
+            st.success("Hash calculated successfully")
+            st.code(file_hash, language="bash")
+            
+            # Copy button
+            st.text_input("Copy hash:", value=file_hash)
+    
+    with col2:
+        # Hash verification
+        st.subheader("Verify Hash")
+        expected_hash = st.text_input("Expected Hash")
+        
+        if uploaded_file and expected_hash:
+            # Clean input (remove whitespace)
+            expected_hash = expected_hash.strip().lower()
+            
+            if file_hash == expected_hash:
+                st.success("✅ Hash verified! File is authentic.")
+            else:
+                st.error("❌ Hash mismatch! File may be corrupted or tampered with.")
+                
+                # Show comparison
+                st.subheader("Comparison")
+                st.markdown(f"**Expected:** `{expected_hash}`")
+                st.markdown(f"**Calculated:** `{file_hash}`")
+    
+    # Security information
+    with st.expander("Hash Algorithm Security Information"):
+        st.markdown("""
+        - **MD5**: Fast but broken. Should not be used for security purposes.
+        - **SHA-1**: Faster than SHA-256 but has known weaknesses. Not recommended for security.
+        - **SHA-256**: Good balance of speed and security. Recommended for most use cases.
+        - **SHA3-256**: Newer hash algorithm with different construction than SHA-2 family.
+        """)
+        
+        st.warning("For security-critical applications, prefer SHA-256 or SHA3-256.")
+
+# --- 13. JWT Token Inspector (NEW FEATURE) ---
+elif feature == "🌐 JWT Token Inspector":
+    st.header("🌐 JWT Token Inspector & Validator")
+    
+    jwt_token = st.text_area("Enter JWT Token", height=100, placeholder="eyJhb...token")
+    
+    if jwt_token and st.button("Decode Token"):
+        # Simple JWT parsing without verification
+        try:
+            # Split the token into parts
+            parts = jwt_token.split('.')
+            if len(parts) != 3:
+                st.error("Invalid JWT format. A JWT should have 3 parts separated by dots.")
+            else:
+                # Decode header and payload (ignore signature)
+                
+                # Add padding for proper base64 decoding
+                def decode_base64_url(input_str):
+                    padding_needed = len(input_str) % 4
+                    if padding_needed:
+                        input_str += '=' * (4 - padding_needed)
+                    return base64.urlsafe_b64decode(input_str).decode('utf-8')
+                
+                try:
+                    header_raw = parts[0]
+                    payload_raw = parts[1]
+                    signature_raw = parts[2]
+                    
+                    header = json.loads(decode_base64_url(header_raw))
+                    payload = json.loads(decode_base64_url(payload_raw))
+                    
+                    # Display token parts
+                    st.subheader("Header")
+                    st.json(header)
+                    
+                    st.subheader("Payload")
+                    st.json(payload)
+                    
+                    # Token information and validation
+                    st.subheader("Token Information")
+                    
+                    # Check if token has expiration
+                    if 'exp' in payload:
+                        exp_timestamp = payload['exp']
+                        exp_datetime = datetime.datetime.fromtimestamp(exp_timestamp)
+                        current_time = datetime.datetime.now()
+                        
+                        if current_time > exp_datetime:
+                            st.error(f"⚠️ Token expired on {exp_datetime}")
+                        else:
+                            time_left = exp_datetime - current_time
+                            st.success(f"✅ Token valid until {exp_datetime} ({time_left.days} days, {time_left.seconds//3600} hours remaining)")
+                    else:
+                        st.warning("No expiration time found in token")
+                    
+                    # Display token algorithm
+                    if 'alg' in header:
+                        alg = header['alg']
+                        if alg == 'none':
+                            st.error("⚠️ Insecure 'none' algorithm used! This is vulnerable to tampering.")
+                        elif alg.startswith('HS'):
+                            st.info(f"Algorithm: {alg} (HMAC-based)")
+                        elif alg.startswith('RS'):
+                            st.info(f"Algorithm: {alg} (RSA-based)")
+                        elif alg.startswith('ES'):
+                            st.info(f"Algorithm: {alg} (ECDSA-based)")
+                        else:
+                            st.info(f"Algorithm: {alg}")
+                            
+                    # Additional token information
+                    if 'iat' in payload:
+                        iat_datetime = datetime.datetime.fromtimestamp(payload['iat'])
+                        st.info(f"Issued at: {iat_datetime}")
+                    
+                    if 'iss' in payload:
+                        st.info(f"Issuer: {payload['iss']}")
+                    
+                    if 'sub' in payload:
+                        st.info(f"Subject: {payload['sub']}")
+                except Exception as e:
+                    st.error(f"Error decoding token: {str(e)}")
+        except Exception as e:
+            st.error(f"Failed to decode token: {str(e)}")
+    
+    with st.expander("JWT Security Tips"):
+        st.markdown("""
+        - Always verify JWT signatures before trusting any claims
+        - Use strong signing keys and prefer asymmetric algorithms (RS256, ES256) over symmetric ones (HS256)
+        - Set reasonable expiration times
+        - Include 'aud' (audience) claims to prevent token reuse across services
+        - Never pass sensitive information in a JWT without encryption
+        """)
+
+# --- 14. SSH Key Manager (NEW FEATURE) ---
+elif feature == "🔒 SSH Key Manager":
+    st.header("🔒 SSH Key Manager")
+    
+    ssh_operation = st.radio("Operation", ["Generate SSH Key", "Convert SSH Key Format", "View Public Key"])
+    
+    if ssh_operation == "Generate SSH Key":
+        key_type = st.selectbox("Key Type", ["RSA", "ED25519"])
+        key_bits = st.select_slider("Key Size (bits)", options=[2048, 3072, 4096, 8192], value=3072) if key_type == "RSA" else None
+        
+        with st.expander("Advanced Options"):
+            key_comment = st.text_input("Key Comment (Optional)", placeholder="your_email@example.com")
+            password_protect = st.checkbox("Password Protect Key")
+            if password_protect:
+                key_password = st.text_input("Key Password", type="password")
+        
+        if st.button("Generate Key"):
+            st.info("Generating SSH key...")
+            
+            if key_type == "RSA":
+                key = RSA.generate(key_bits)
+                private_key = key.export_key(format='PEM', passphrase=key_password if password_protect else None)
+                public_key = key.publickey().export_key(format='OpenSSH')
+                
+                # Add comment if provided
+                if key_comment:
+                    public_key = public_key + b' ' + key_comment.encode()
+                
+            elif key_type == "ED25519":
+                # Note: This is a simplified version. In practice, you'd use libraries like cryptography
+                # or paramiko for proper SSH key generation. Using ECC keys as a substitute.
+                key = ECC.generate(curve='Ed25519')
+                private_key = key.export_key(format='PEM', passphrase=key_password if password_protect else None)
+                
+                # This is a simplified representation
+                public_key = b"ssh-ed25519 " + base64.b64encode(key.public_key().export_key(format='raw'))
+                
+                # Add comment if provided
+                if key_comment:
+                    public_key = public_key + b' ' + key_comment.encode()
+            
+            # Display keys
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.subheader("Private Key")
+                st.code(private_key.decode(), language="bash")
+                st.download_button("Download Private Key", private_key, file_name="id_" + key_type.lower())
+                
+            with col2:
+                st.subheader("Public Key")
+                st.code(public_key.decode(), language="bash")
+                st.download_button("Download Public Key", public_key, file_name="id_" + key_type.lower() + ".pub")
+                
+            # Usage instructions
+            st.subheader("Usage Instructions")
+            st.markdown("""
+            1. Download the private key and public key files
+            2. Move the private key to `~/.ssh/` directory on your system
+            3. Set proper permissions: `chmod 600 ~/.ssh/id_rsa`
+            4. Add the public key to authorized_keys on your server
+            """)
+            
+    elif ssh_operation == "Convert SSH Key Format":
+        st.info("Upload your SSH key to convert between formats")
+        
+        uploaded_key = st.file_uploader("Upload SSH Key")
+        target_format = st.selectbox("Target Format", ["OpenSSH", "PEM", "PKCS#8"])
+        
+        if uploaded_key and st.button("Convert"):
+            st.warning("This feature would convert between SSH key formats")
+            st.info("In a complete implementation, this would use libraries like cryptography or paramiko to handle SSH key format conversion")
+    
+    elif ssh_operation == "View Public Key":
+        st.info("Extract public key from private key")
+        
+        uploaded_key = st.file_uploader("Upload Private SSH Key")
+        
+        if uploaded_key and st.button("Extract Public Key"):
+            try:
+                key_data = uploaded_key.read()
+                
+                # Try to determine key type and extract public key
+                try:
+                    key = RSA.import_key(key_data)
+                    public_key = key.publickey().export_key(format='OpenSSH')
+                    st.success("Public key extracted successfully")
+                    st.code(public_key.decode(), language="bash")
+                    st.download_button("Download Public Key", public_key, file_name="extracted_key.pub")
+                except:
+                    try:
+                        # Try as ECC key
+                        key = ECC.import_key(key_data)
+                        public_key = key.public_key().export_key(format='OpenSSH')
+                        st.success("Public key extracted successfully")
+                        st.code(public_key.decode(), language="bash")
+                        st.download_button("Download Public Key", public_key, file_name="extracted_key.pub")
+                    except Exception as e:
+                        st.error(f"Unable to extract public key: {str(e)}")
+            except Exception as e:
+                st.error(f"Error reading key file: {str(e)}")
+                
+    # SSH Security tips
+    with st.expander("SSH Security Best Practices"):
+        st.markdown("""
+        - Use ED25519 keys when possible (they're smaller and more secure)
+        - Always protect SSH private keys with a strong passphrase
+        - Use ssh-agent to avoid typing your passphrase repeatedly
+        - Regularly audit and rotate SSH keys
+        - Consider using certificate-based authentication for large deployments
+        """)
 
 st.markdown("---")
 st.caption("Built with ❤️ using PyCryptodome, Streamlit, and Gemini AI.")
