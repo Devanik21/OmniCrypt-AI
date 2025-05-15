@@ -68,7 +68,8 @@ feature = st.sidebar.selectbox(
         "💾 Encrypted Notes Vault",
         "🛰️ Secure Chat Demo (ECC + AES)",
         "🔍 Randomness Tester",
-        "📂 Encrypted Zip File Generator"
+         "✍️ File Signature Generator & Verifier"
+        
     ]
 )
 
@@ -1375,23 +1376,50 @@ elif feature == "🔍 Randomness Tester":
 
 
 
-elif feature == "📂 Encrypted Zip File Generator":
-    st.header("📂 Encrypted ZIP Generator")
-    uploaded_files = st.file_uploader("Upload Files", accept_multiple_files=True)
-    zip_password = st.text_input("Password for ZIP", type="password")
+elif feature == "✍️ File Signature Generator & Verifier":
+    st.header("✍️ File Digital Signature Tool")
 
-    if uploaded_files and zip_password and st.button("Generate Encrypted ZIP"):
-        buffer = io.BytesIO()
-        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
-            for file in uploaded_files:
-                zipf.writestr(file.name, file.read())
-        zip_data = buffer.getvalue()
+    mode = st.radio("Mode", ["Sign File", "Verify Signature"])
+    
+    if mode == "Sign File":
+        file = st.file_uploader("Upload File to Sign")
+        if file and st.button("Generate RSA Signature"):
+            key = RSA.generate(2048)
+            private_key = key.export_key()
+            public_key = key.publickey().export_key()
 
-        key = SHA256.new(zip_password.encode()).digest()
-        cipher = AES.new(key, AES.MODE_EAX)
-        ct, tag = cipher.encrypt_and_digest(zip_data)
-        encrypted_zip = cipher.nonce + tag + ct
-        st.download_button("Download Encrypted ZIP", encrypted_zip, file_name="encrypted.zip")
+            content = file.read()
+            hash_obj = SHA256.new(content)
+            signature = pkcs1_15.new(key).sign(hash_obj)
+
+            # Save all to ZIP
+            buffer = io.BytesIO()
+            with zipfile.ZipFile(buffer, "w") as zipf:
+                zipf.writestr("file.data", content)
+                zipf.writestr("signature.bin", signature)
+                zipf.writestr("public_key.pem", public_key)
+            buffer.seek(0)
+
+            st.download_button("📦 Download Signed Package", buffer, file_name="signed_file_package.zip")
+            st.success("✅ File signed and bundled!")
+
+    else:
+        file = st.file_uploader("Upload File")
+        signature_file = st.file_uploader("Upload Signature (.bin)")
+        pub_key_file = st.file_uploader("Upload Public Key (.pem)")
+
+        if file and signature_file and pub_key_file and st.button("Verify Signature"):
+            try:
+                content = file.read()
+                signature = signature_file.read()
+                public_key = RSA.import_key(pub_key_file.read())
+                hash_obj = SHA256.new(content)
+
+                pkcs1_15.new(public_key).verify(hash_obj, signature)
+                st.success("✅ Signature is valid! File is authentic.")
+            except Exception as e:
+                st.error(f"❌ Signature verification failed: {str(e)}")
+
 
 
 st.markdown("---")
