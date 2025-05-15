@@ -181,7 +181,7 @@ elif feature == "🌪️ ChaCha20 Encrypt/Decrypt":
                 st.error(f"❌ ChaCha20 Decryption Failed – {str(e)}")
 
 # --- 3. RSA/ECC/EdDSA Playground ---
-elif feature == "🔏 Asymmetric Cryptography":
+elif feature == "🔄 Asymmetric Cryptography":
     st.header("🔏 Key Generation + Signature Verification")
     crypto_type = st.selectbox("Choose Crypto System", ["RSA", "ECC", "EdDSA"])
 
@@ -257,7 +257,7 @@ elif feature == "🔏 Asymmetric Cryptography":
             st.download_button("Download EdDSA Signature", signature, file_name="eddsa_sig.bin")
 
 # --- 4. HMAC & Hash Functions (Enhanced) ---
-elif feature == "📜 HMAC & Hash Functions":
+elif feature == "🧮 HMAC & Hash Functions":
     st.header("📜 Hash Functions & HMAC Generator")
     
     hash_tab, hmac_tab = st.tabs(["Hash Functions", "HMAC"])
@@ -284,7 +284,7 @@ elif feature == "📜 HMAC & Hash Functions":
             st.code(h.hexdigest(), language="bash")
 
 # --- 5. Gemini-Powered Code Explain ---
-elif feature == "🤖 AI Code Explainer":
+elif feature == "🧠 AI Code Explainer":
     st.header("🤖 Gemini-Powered Code Explainer")
     code_input = st.text_area("Paste Code to Explain", height=250)
     
@@ -315,7 +315,7 @@ elif feature == "🤖 AI Code Explainer":
             st.warning("Please enter your Gemini API Key and code.")
 
 # --- 6. Password Strength Analyzer (NEW FEATURE) ---
-elif feature == "🔑 Password Strength Analyzer":
+elif feature == "💪 Password Strength Analyzer":
     st.header("🔑 Password Strength Analyzer")
     
     password = st.text_input("Enter Password to Analyze", type="password")
@@ -594,7 +594,7 @@ elif feature == "🔄 Format Converter":
                     st.error(f"Conversion error: {str(e)}")
 
 # --- 10. Secure Password Generator (NEW FEATURE) ---
-elif feature == "🎲 Secure Password Generator":
+elif feature == "🎯 Secure Password Generator":
     st.header("🎲 Secure Password Generator")
     
     # Password generation options
@@ -849,7 +849,7 @@ elif feature == "🔍 File Hash Verification":
         st.warning("For security-critical applications, prefer SHA-256 or SHA3-256.")
 
 # --- 13. JWT Token Inspector (NEW FEATURE) ---
-elif feature == "🌐 JWT Token Inspector":
+elif feature == "🎫 JWT Token Inspector":
     st.header("🌐 JWT Token Inspector & Validator")
     
     jwt_token = st.text_area("Enter JWT Token", height=100, placeholder="eyJhb...token")
@@ -942,7 +942,7 @@ elif feature == "🌐 JWT Token Inspector":
         """)
 
 # --- 14. SSH Key Manager (NEW FEATURE) ---
-elif feature == "🔒 SSH Key Manager":
+elif feature == "🗝️ SSH Key Manager":
     st.header("🔒 SSH Key Manager")
     
     ssh_operation = st.radio("Operation", ["Generate SSH Key", "Convert SSH Key Format", "View Public Key"])
@@ -1101,7 +1101,7 @@ elif feature == "🧮 Modular Calculator":
             st.error(f"Error: {e}")
 
 
-elif feature == "🔁 Base Converter":
+elif feature == "🔢 Base Converter":
     st.header("🔁 Number Base Converter")
 
     num = st.text_input("Enter Number")
@@ -1127,7 +1127,7 @@ elif feature == "🔁 Base Converter":
 
 
 
-elif feature == "🧠 Crypto Puzzle Game":
+elif feature == "🧩 Crypto Puzzle Game":
     st.header("🧠 Crypto Puzzle Challenge")
 
     puzzles = [
@@ -1149,7 +1149,7 @@ elif feature == "🧠 Crypto Puzzle Game":
             st.error("❌ Nope! Try again,  hacker 💔")
 
 
-elif feature == "🧬 ECC Key Exchange Visualizer":
+elif feature == " 📈 ECC Key Exchange Visualizer":
     st.header("🧬 ECC Key Exchange (ECDH) Visualizer")
     curve = st.selectbox("Select Curve", ["P-256", "P-384", "P-521"])
     
@@ -1178,7 +1178,7 @@ elif feature == "🧬 ECC Key Exchange Visualizer":
 
 
 
-elif feature == "📅 TOTP Generator & Verifier":
+elif feature == "⏰ TOTP Generator & Verifier":
     st.header("📅 TOTP Authenticator")
     
     secret = st.text_input("Secret (Base32)", value=pyotp.random_base32())
@@ -1198,7 +1198,7 @@ elif feature == "📅 TOTP Generator & Verifier":
 
 
 
-elif feature == "📁 File Splitter & Joiner":
+elif feature == "✂️ File Splitter & Joiner":
     st.header("📁 File Splitter & Joiner")
     mode = st.radio("Mode", ["Split", "Join"])
 
@@ -1223,7 +1223,7 @@ elif feature == "📁 File Splitter & Joiner":
 
 
 
-elif feature == "🔎 Entropy Analyzer":
+elif feature == "📏 Entropy Analyzer":
     st.header("🔎 Shannon Entropy Analyzer")
     text = st.text_area("Input Text or Data")
 
@@ -1240,7 +1240,7 @@ elif feature == "🔎 Entropy Analyzer":
 
 
 
-elif feature == "📦 PGP File Encrypt/Decrypt":
+elif feature == "📨 PGP File Encrypt/Decrypt":
     st.header("📦 Simulated PGP (Hybrid RSA + AES Encryption)")
 
     mode = st.radio("Mode", ["Encrypt", "Decrypt"])
@@ -1309,7 +1309,7 @@ elif feature == "📦 PGP File Encrypt/Decrypt":
 
 
 
-elif feature == "🔐 Master Key Derivation Tool":
+elif feature == "🗄️ Master Key Derivation Tool":
     st.header("🔐 Derive Unique Keys from Master Password")
     master = st.text_input("Master Password", type="password")
     site = st.text_input("Service Identifier (e.g., gmail.com)")
@@ -1320,7 +1320,7 @@ elif feature == "🔐 Master Key Derivation Tool":
         st.code(derived.hex(), "Derived Key (Hex)")
 
 
-elif feature == "💾 Encrypted Notes Vault":
+elif feature == "📝 Encrypted Notes Vault":
     st.header("💾 Secure Notes Vault")
     vault_pwd = st.text_input("Vault Password", type="password")
     note = st.text_area("Write your secure note here")
@@ -1346,7 +1346,7 @@ elif feature == "💾 Encrypted Notes Vault":
             st.error("Failed to decrypt: " + str(e))
 
 
-elif feature == "🛰️ Secure Chat Demo (ECC + AES)":
+elif feature == "💬 Secure Chat Demo (ECC + AES)":
     st.header("🛰️ Secure Chat Simulation (ECC + AES)")
     msg = st.text_area("Your Message")
     shared_secret = SHA256.new(b"shared_key_simulated").digest()
@@ -1371,7 +1371,7 @@ elif feature == "🛰️ Secure Chat Demo (ECC + AES)":
 
 
 
-elif feature == "🔍 Randomness Tester":
+elif feature == "🎲 Randomness Tester":
     st.header("🔍 Randomness Tester (Basic)")
     binary_data = st.text_area("Binary String (e.g., 010101...)")
 
@@ -1442,7 +1442,7 @@ elif feature == "✍️ File Signature Generator & Verifier":
 
 
 
-elif feature == "🛡️ Post-Quantum Cryptography Simulator":
+elif feature == "🌌 Post-Quantum Cryptography Simulator":
     st.header("🛡️ Post-Quantum Cryptography Simulator (Simplified)")
 
     st.write("This simulates a key encapsulation mechanism (KEM) like Kyber (not secure, just demo)")
@@ -2267,6 +2267,345 @@ elif feature == "🔱 Threshold Cryptography Simulator":
            - Allow multiple parties to compute functions over private inputs
            - Applications in privacy-preserving analytics and secure auctions
         """)
+
+
+# --- 5. Side-Channel Attack Demonstrator ---
+elif feature == "⚡ Side-Channel Attack Demonstrator":
+    st.header("⚡ Side-Channel Attack Demonstrator")
+    
+    st.markdown("""
+    ### Side-Channel Attacks
+    Side-channel attacks extract secrets by analyzing physical information leaked during computation,
+    such as timing, power consumption, electromagnetic emissions, or sound.
+    """)
+    
+    sc_tab1, sc_tab2, sc_tab3 = st.tabs(["Timing Attack Demo", "Power Analysis Visualization", "Side-Channel Defenses"])
+    
+    with sc_tab1:
+        st.subheader("Password Timing Attack Simulation")
+        
+        st.markdown("""
+        This demonstrates how comparing passwords character-by-character can leak timing information,
+        allowing an attacker to guess the password one character at a time.
+        """)
+        
+        # Vulnerable password comparison (for demonstration purposes)
+        def vulnerable_password_check(stored_password, input_password):
+            results = []
+            for i in range(min(len(stored_password), len(input_password))):
+                # Check character by character
+                match = stored_password[i] == input_password[i]
+                results.append({
+                    "position": i,
+                    "stored_char": stored_password[i],
+                    "input_char": input_password[i],
+                    "match": match,
+                    "time_ms": random.randint(5, 15) if match else random.randint(1, 5)  # Simulated time difference
+                })
+                
+                # Early exit on mismatch (vulnerable to timing attacks)
+                if not match:
+                    break
+            
+            return results
+        
+        # Set a secret password for demonstration
+        stored_password = "S3cr3tP@ss"
+        
+        # User input for testing
+        test_password = st.text_input("Enter a test password:", value="S3cr", max_chars=len(stored_password))
+        
+        if st.button("Test Password Comparison"):
+            results = vulnerable_password_check(stored_password, test_password)
+            
+            # Display results
+            st.subheader("Character-by-Character Comparison")
+            
+            # Create visualizations
+            char_positions = [r["position"] for r in results]
+            char_times = [r["time_ms"] for r in results]
+            
+            # Timing visualization
+            fig, ax = plt.subplots(figsize=(10, 4))
+            bars = ax.bar(char_positions, char_times, color=['green' if r["match"] else 'red' for r in results])
+            
+            ax.set_xlabel('Character Position')
+            ax.set_ylabel('Processing Time (ms)')
+            ax.set_title('Password Comparison Timing')
+            
+            # Add time labels on top of bars
+            for bar in bars:
+                height = bar.get_height()
+                ax.annotate(f'{height}ms',
+                           xy=(bar.get_x() + bar.get_width() / 2, height),
+                           xytext=(0, 3),
+                           textcoords="offset points",
+                           ha='center', va='bottom')
+            
+            st.pyplot(fig)
+            
+            # Display character-by-character results
+            results_df = pd.DataFrame([{
+                "Position": r["position"],
+                "Expected": r["stored_char"],
+                "Input": r["input_char"],
+                "Match": "✓" if r["match"] else "✗",
+                "Time (ms)": r["time_ms"]
+            } for r in results])
+            
+            st.dataframe(results_df)
+            
+            # Explanation
+            if any(not r["match"] for r in results):
+                last_match = max([r["position"] for r in results if r["match"]], default=-1)
+                st.warning(f"""
+                **Timing Attack Vulnerability Detected!**
+                
+                The comparison stops at the first mismatched character (position {last_match + 1}).
+                An attacker could use this timing difference to guess the password character by character.
+                """)
+            else:
+                st.success("All characters match up to the input length!")
+            
+            if len(test_password) < len(stored_password):
+                st.info(f"The input is shorter than the stored password ({len(test_password)} vs {len(stored_password)} characters).")
+            
+            # Constant-time alternative
+            st.subheader("Secure Constant-Time Comparison")
+            st.markdown("""
+            A secure implementation would compare all characters regardless of mismatches,
+            taking the same amount of time regardless of how many characters match.
+            
+            ```python
+            def constant_time_compare(a, b):
+                if len(a) != len(b):
+                    return False
+                    
+                result = 0
+                for x, y in zip(a, b):
+                    result |= ord(x) ^ ord(y)
+                return result == 0
+            ```
+            
+            This method:
+            1. Compares all characters using XOR (^)
+            2. Combines results with OR (|)
+            3. Returns true only if all characters match
+            4. Takes the same time regardless of where mismatches occur
+            """)
+    
+    with sc_tab2:
+        st.subheader("Power Analysis Attack Visualization")
+        
+        st.markdown("""
+        Power analysis attacks extract secrets by analyzing power consumption patterns during cryptographic operations.
+        This visualization demonstrates the concept of Simple Power Analysis (SPA) and Differential Power Analysis (DPA).
+        """)
+        
+        # Generate simulated power traces
+        def generate_power_trace(key, with_leakage=True):
+            trace = []
+            baseline = [10 + random.random() * 2 for _ in range(20)]  # Baseline power consumption
+            
+            for bit in key:
+                if bit == '1':
+                    # Higher power for 1-bits (if leakage is enabled)
+                    if with_leakage:
+                        segment = [15 + random.random() * 3 for _ in range(10)]
+                    else:
+                        segment = [12 + random.random() * 2 for _ in range(10)]
+                else:
+                    # Lower power for 0-bits
+                    segment = [12 + random.random() * 2 for _ in range(10)]
+                
+                trace.extend(segment)
+            
+            # Add noise
+            noise_level = random.uniform(0.5, 1.5)
+            noisy_trace = [p + random.normalvariate(0, noise_level) for p in baseline + trace]
+            return noisy_trace
+        
+        # Demo options
+        key_length = st.slider("Secret Key Length (bits)", min_value=4, max_value=16, value=8)
+        secret_key = ''.join([random.choice(['0', '1']) for _ in range(key_length)])
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            show_key = st.checkbox("Show Secret Key", value=False)
+        with col2:
+            leakage = st.checkbox("Enable Power Leakage", value=True)
+            
+        if show_key:
+            st.code(f"Secret Key: {secret_key}", language="bash")
+            
+        attack_type = st.radio("Attack Visualization", ["Simple Power Analysis (SPA)", "Differential Power Analysis (DPA)"])
+        
+        if st.button("Generate Power Traces"):
+            if attack_type == "Simple Power Analysis (SPA)":
+                # Generate a power trace for the key
+                trace = generate_power_trace(secret_key, leakage)
+                
+                # Plot the trace
+                fig, ax = plt.subplots(figsize=(10, 5))
+                x_vals = list(range(len(trace)))
+                ax.plot(x_vals, trace, 'b-')
+                
+                # Mark the bit regions if showing key
+                if show_key:
+                    bit_width = 10
+                    baseline_length = 20
+                    
+                    for i, bit in enumerate(secret_key):
+                        start_x = baseline_length + i * bit_width
+                        mid_x = start_x + bit_width // 2
+                        color = 'red' if bit == '1' else 'green'
+                        
+                        # Add shaded region
+                        ax.axvspan(start_x, start_x + bit_width, alpha=0.2, color=color)
+                        # Add bit value
+                        ax.text(mid_x, max(trace) + 1, bit, ha='center')
+                
+                ax.set_title('Power Consumption Trace')
+                ax.set_xlabel('Time')
+                ax.set_ylabel('Power Consumption (mW)')
+                
+                if leakage:
+                    ax.text(0.05, 0.95, "Vulnerable Implementation", transform=ax.transAxes, 
+                           bbox=dict(facecolor='red', alpha=0.2))
+                else:
+                    ax.text(0.05, 0.95, "Protected Implementation", transform=ax.transAxes,
+                           bbox=dict(facecolor='green', alpha=0.2))
+                
+                st.pyplot(fig)
+                
+                # Explanation
+                if leakage:
+                    st.warning("""
+                    **Simple Power Analysis Vulnerability:**
+                    
+                    The power consumption pattern clearly shows differences between 0 and 1 bits.
+                    An attacker with physical access to the device could measure these power differences
+                    to recover the secret key directly from a single trace.
+                    """)
+                else:
+                    st.success("""
+                    **Protected Implementation:**
+                    
+                    This implementation uses constant-power operations, making it difficult to
+                    distinguish between 0 and 1 bits based on power consumption.
+                    """)
+                
+            else:  # Differential Power Analysis
+                # Generate multiple traces for statistical analysis
+                num_traces = 20
+                traces = []
+                
+                for i in range(num_traces):
+                    trace = generate_power_trace(secret_key, leakage)
+                    traces.append(trace)
+                
+                # Plot multiple traces
+                fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+                
+                # Plot individual traces
+                for i, trace in enumerate(traces):
+                    ax1.plot(trace, alpha=0.3, color='blue')
+                
+                ax1.set_title(f'Multiple Power Traces ({num_traces} runs)')
+                ax1.set_xlabel('Time')
+                ax1.set_ylabel('Power (mW)')
+                
+                # Plot the average trace
+                avg_trace = [sum(t[i] for t in traces) / len(traces) for i in range(len(traces[0]))]
+                ax2.plot(avg_trace, color='red', linewidth=2)
+                ax2.set_title('Average Power Trace (DPA Result)')
+                ax2.set_xlabel('Time')
+                ax2.set_ylabel('Power (mW)')
+                
+                # Mark the bit regions if showing key
+                if show_key:
+                    bit_width = 10
+                    baseline_length = 20
+                    
+                    for i, bit in enumerate(secret_key):
+                        start_x = baseline_length + i * bit_width
+                        mid_x = start_x + bit_width // 2
+                        color = 'red' if bit == '1' else 'green'
+                        
+                        # Add shaded region to average plot
+                        ax2.axvspan(start_x, start_x + bit_width, alpha=0.2, color=color)
+                        # Add bit value
+                        ax2.text(mid_x, max(avg_trace) + 0.5, bit, ha='center')
+                
+                plt.tight_layout()
+                st.pyplot(fig)
+                
+                # Analysis and explanation
+                if leakage:
+                    st.warning("""
+                    **Differential Power Analysis Results:**
+                    
+                    By averaging multiple power traces, the signal-to-noise ratio improves.
+                    Statistical differences in power consumption become visible,
+                    allowing an attacker to recover the key even when individual traces are noisy.
+                    """)
+                else:
+                    st.success("""
+                    **Protected Against DPA:**
+                    
+                    This implementation uses constant-power operations and additional 
+                    countermeasures like random masking of operations to resist statistical analysis.
+                    """)
+    
+    with sc_tab3:
+        st.subheader("Side-Channel Attack Defenses")
+        
+        st.markdown("""
+        ### Common Side-Channel Attack Types:
+        
+        1. **Timing Attacks**
+           - Extract secrets by measuring operation execution time
+           - Example: Password comparison that exits early on first mismatch
+        
+        2. **Power Analysis Attacks**
+           - Simple Power Analysis (SPA): Direct observation of power patterns
+           - Differential Power Analysis (DPA): Statistical analysis of many traces
+        
+        3. **Electromagnetic Analysis**
+           - Similar to power analysis but uses EM emissions
+           - Can be performed from a distance without direct contact
+        
+        4. **Acoustic Analysis**
+           - Listening to sounds produced by hardware
+           - Examples: Keyboard acoustic attacks, CPU fan noise analysis
+        
+        5. **Cache Timing Attacks**
+           - Exploits timing differences in CPU cache access
+           - Can be used for cross-VM attacks in cloud environments
+        
+        ### Defense Mechanisms:
+        
+        1. **Constant-Time Operations**
+           - Ensure cryptographic operations take the same time regardless of the data
+           - Avoid data-dependent branches and array accesses
+        
+        2. **Balanced Power Consumption**
+           - Ensure operations consume the same power regardless of the data
+           - Implement dual-rail logic for hardware cryptographic modules
+        
+        3. **Random Masking**
+           - Add randomness to computations to hide patterns
+           - Example: Blinding techniques for RSA
+        
+        4. **Physical Shielding**
+           - Faraday cages to prevent EM leakage
+           - Sound dampening for acoustic attacks
+        
+        5. **Noise Addition**
+           - Add random delays or operations to obscure timing patterns
+           - Generate random power consumption patterns
+        """)
+
 
 
 
