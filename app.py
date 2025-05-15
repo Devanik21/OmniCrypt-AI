@@ -91,6 +91,10 @@ feature = st.sidebar.selectbox(
 )
 
 
+try:
+    long
+except NameError:
+    long = int
 
 
 # --- 1. AES Encrypt/Decrypt ---
