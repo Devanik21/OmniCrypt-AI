@@ -6,3 +6,7 @@ matplotlib
 qrcode
 pillow
 pyotp
+secretsharing
+sounddevice
+scipy
+requests
