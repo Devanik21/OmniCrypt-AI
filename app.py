@@ -76,7 +76,7 @@ feature = st.sidebar.selectbox(
         "✍️ File Signature Generator & Verifier",
         
         # 🚀 Next-level advanced tools
-        "🔐 Secure Multi-Party Secret Sharing",
+        
         "🛡️ Post-Quantum Cryptography Simulator",
         "🧹 Encrypted File Metadata Remover",
         "⛓️ Blockchain Hash Logger",
@@ -1437,31 +1437,7 @@ elif feature == "✍️ File Signature Generator & Verifier":
                 st.error(f"❌ Signature verification failed: {str(e)}")
 
 
-elif feature == "🔐 Secure Multi-Party Secret Sharing":
-    st.header("🔐 Secure Multi-Party Secret Sharing (Shamir's Secret Sharing)")
 
-    secret = st.text_input("Enter secret to split")
-    total_shares = st.number_input("Total shares to create", min_value=2, max_value=20, value=5)
-    threshold = st.number_input("Threshold for recovery", min_value=2, max_value=total_shares, value=3)
-
-    if st.button("Split Secret"):
-        if secret:
-            shares = PlaintextToHexSecretSharer.split_secret(secret, threshold, total_shares)
-            for i, share in enumerate(shares):
-                st.code(f"Share {i+1}: {share}")
-
-    st.markdown("---")
-    recovery_shares = st.text_area("Enter shares (one per line) to recover secret")
-    if st.button("Recover Secret"):
-        shares_input = recovery_shares.strip().splitlines()
-        if len(shares_input) >= threshold:
-            try:
-                recovered = PlaintextToHexSecretSharer.recover_secret(shares_input)
-                st.success(f"Recovered Secret: {recovered}")
-            except Exception as e:
-                st.error(f"Error recovering secret: {e}")
-        else:
-            st.warning("Provide enough shares to reach threshold")
 
 
 elif feature == "🛡️ Post-Quantum Cryptography Simulator":
