@@ -28,7 +28,6 @@ from Crypto.Cipher import PKCS1_OAEP
 from PIL import Image
 import hashlib
 import requests
-from secretsharing import PlaintextToHexSecretSharer
 from scipy.io.wavfile import write, read
 
 # --- Streamlit UI ---
