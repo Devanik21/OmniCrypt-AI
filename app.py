@@ -84,7 +84,7 @@ feature = st.sidebar.selectbox(
         "🛡️ Post-Quantum Cryptography Simulator",
         "🧹 Encrypted File Metadata Remover",
         "⛓️ Blockchain Hash Logger",
-        "🎙️ Encrypted Voice Notes"
+        
     ]
 )
 
@@ -1531,54 +1531,7 @@ elif feature == "⛓️ Blockchain Hash Logger":
         except Exception as e:
             st.error(f"API error: {e}")
 
-elif feature == "🎙️ Encrypted Voice Notes":
-    st.header("🎙️ Encrypted Voice Notes")
 
-    duration = st.slider("Record Duration (seconds)", 1, 10, 5)
-    password = st.text_input("Encryption Password", type="password")
-
-    if st.button("Record Voice"):
-        fs = 44100
-        st.info(f"Recording for {duration} seconds...")
-        recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
-        sd.wait()
-        tmp_wav = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-        write(tmp_wav.name, fs, recording)
-
-        with open(tmp_wav.name, "rb") as f:
-            audio_bytes = f.read()
-
-        if password:
-            key = SHA256.new(password.encode()).digest()
-            cipher = AES.new(key, AES.MODE_EAX)
-            ct, tag = cipher.encrypt_and_digest(audio_bytes)
-            encrypted_blob = base64.b64encode(cipher.nonce + tag + ct).decode()
-            st.text_area("Encrypted Audio (Base64)", encrypted_blob, height=150)
-            st.success("Audio encrypted!")
-        else:
-            st.error("Please enter an encryption password")
-
-    encrypted_audio = st.text_area("Paste Encrypted Audio (Base64) to Decrypt")
-    if st.button("Decrypt Audio"):
-        if encrypted_audio and password:
-            try:
-                data = base64.b64decode(encrypted_audio)
-                nonce, tag, ct = data[:16], data[16:32], data[32:]
-                key = SHA256.new(password.encode()).digest()
-                cipher = AES.new(key, AES.MODE_EAX, nonce)
-                decrypted_audio = cipher.decrypt_and_verify(ct, tag)
-
-                tmp_wav_out = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-                with open(tmp_wav_out.name, "wb") as f:
-                    f.write(decrypted_audio)
-
-                audio_bytes = open(tmp_wav_out.name, "rb").read()
-                st.audio(audio_bytes, format="audio/wav")
-                st.success("Audio decrypted and ready to play!")
-            except Exception as e:
-                st.error(f"Decryption failed: {e}")
-        else:
-            st.warning("Please provide both encrypted audio and password")
 
 
 st.markdown("---")
