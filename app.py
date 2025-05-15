@@ -20,6 +20,7 @@ import datetime
 from PIL import Image
 import numpy as np
 import hashlib
+import pyotp
 
 # --- Streamlit UI ---
 st.set_page_config("OmniCrypt", layout="wide",page_icon="🔐")
@@ -1154,7 +1155,6 @@ elif feature == "🧬 ECC Key Exchange Visualizer":
         st.success("🎉 Shared secrets match! Secure channel established.")
 
 
-import pyotp
 
 elif feature == "📅 TOTP Generator & Verifier":
     st.header("📅 TOTP Authenticator")
