@@ -21,7 +21,8 @@ from PIL import Image
 import numpy as np
 import hashlib
 import pyotp
-
+import math
+import zipfile
 # --- Streamlit UI ---
 st.set_page_config("OmniCrypt", layout="wide",page_icon="🔐")
 st.title("🛡️ CryptX Vault Pro – Advanced Cryptography Suite")
@@ -1199,7 +1200,7 @@ elif feature == "📁 File Splitter & Joiner":
 
 
 
-import math
+
 
 elif feature == "🔎 Entropy Analyzer":
     st.header("🔎 Shannon Entropy Analyzer")
@@ -1320,7 +1321,7 @@ elif feature == "🔍 Randomness Tester":
 
 
 
-import zipfile
+
 
 elif feature == "📂 Encrypted Zip File Generator":
     st.header("📂 Encrypted ZIP Generator")
