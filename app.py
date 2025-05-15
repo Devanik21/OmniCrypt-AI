@@ -1219,7 +1219,7 @@ elif feature == "🔎 Entropy Analyzer":
 
 
 
-import zipfile
+
 
 elif feature == "📦 PGP File Encrypt/Decrypt":
     st.header("📦 Simulated PGP (Hybrid RSA + AES Encryption)")
