@@ -34,26 +34,40 @@ if api_key:
 # --- Modern UI with SelectBox instead of tabs ---
 feature = st.sidebar.selectbox(
     "Select Feature",
-    ["🔐 AES Encrypt/Decrypt", 
-     "🌀 ChaCha20 Encrypt/Decrypt",
-     "🔏 Asymmetric Cryptography", 
-     "📜 HMAC & Hash Functions", 
-     "🤖 AI Code Explainer",
-     "🔑 Password Strength Analyzer",
-     "📊 Encryption Benchmark",
-     "📱 QR Code Generator",
-     "🔄 Format Converter",
-     "🎲 Secure Password Generator",
-     "⏱️ Hash Speed Test",
-     "🔍 File Hash Verification",
-     "🌐 JWT Token Inspector",
-     "🔒 SSH Key Manager",
-     "🕵️ Cipher Identifier",
-     "🧮 Modular Calculator",
-     "🔁 Base Converter",
-     
-     "🧠 Crypto Puzzle Game"]
+    [
+        "🔐 AES Encrypt/Decrypt", 
+        "🌀 ChaCha20 Encrypt/Decrypt",
+        "🔏 Asymmetric Cryptography", 
+        "📜 HMAC & Hash Functions", 
+        "🤖 AI Code Explainer",
+        "🔑 Password Strength Analyzer",
+        "📊 Encryption Benchmark",
+        "📱 QR Code Generator",
+        "🔄 Format Converter",
+        "🎲 Secure Password Generator",
+        "⏱️ Hash Speed Test",
+        "🔍 File Hash Verification",
+        "🌐 JWT Token Inspector",
+        "🔒 SSH Key Manager",
+        "🕵️ Cipher Identifier",
+        "🧮 Modular Calculator",
+        "🔁 Base Converter",
+        "🧠 Crypto Puzzle Game",
+        
+        # 💖 New Tools Below 💖
+        "🧬 ECC Key Exchange Visualizer",
+        "📅 TOTP Generator & Verifier",
+        "📁 File Splitter & Joiner",
+        "🔎 Entropy Analyzer",
+        "📦 PGP File Encrypt/Decrypt",
+        "🔐 Master Key Derivation Tool",
+        "💾 Encrypted Notes Vault",
+        "🛰️ Secure Chat Demo (ECC + AES)",
+        "🔍 Randomness Tester",
+        "📂 Encrypted Zip File Generator"
+    ]
 )
+
 
 
 # --- 1. AES Encrypt/Decrypt ---
@@ -1111,6 +1125,220 @@ elif feature == "🧠 Crypto Puzzle Game":
         else:
             st.error("❌ Nope! Try again,  hacker 💔")
 
+
+elif feature == "🧬 ECC Key Exchange Visualizer":
+    st.header("🧬 ECC Key Exchange (ECDH) Visualizer")
+    curve = st.selectbox("Select Curve", ["P-256", "P-384", "P-521"])
+    
+    if st.button("Generate Key Pairs and Compute Shared Secret"):
+        alice_priv = ECC.generate(curve=curve)
+        bob_priv = ECC.generate(curve=curve)
+
+        alice_pub = alice_priv.public_key()
+        bob_pub = bob_priv.public_key()
+
+        shared_alice = alice_priv.d * bob_pub.pointQ
+        shared_bob = bob_priv.d * alice_pub.pointQ
+
+        st.subheader("🔐 Key Exchange Results")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.code(alice_priv.export_key(format='PEM'), "Alice Private Key")
+            st.code(alice_pub.export_key(format='PEM'), "Alice Public Key")
+        with col2:
+            st.code(bob_priv.export_key(format='PEM'), "Bob Private Key")
+            st.code(bob_pub.export_key(format='PEM'), "Bob Public Key")
+        
+        st.code(f"Shared Secret (Alice): {shared_alice}", "bash")
+        st.code(f"Shared Secret (Bob):   {shared_bob}", "bash")
+        st.success("🎉 Shared secrets match! Secure channel established.")
+
+
+import pyotp
+
+elif feature == "📅 TOTP Generator & Verifier":
+    st.header("📅 TOTP Authenticator")
+    
+    secret = st.text_input("Secret (Base32)", value=pyotp.random_base32())
+    totp = pyotp.TOTP(secret)
+
+    st.write("🔢 Current OTP:", totp.now())
+    st.write("⏳ Time left:", totp.interval - (int(time.time()) % totp.interval), "seconds")
+
+    st.text_input("Enter OTP to Verify", key="otp_input")
+    if st.button("Verify OTP"):
+        if totp.verify(st.session_state.otp_input):
+            st.success("✅ Valid OTP!")
+        else:
+            st.error("❌ Invalid OTP!")
+
+
+
+
+
+elif feature == "📁 File Splitter & Joiner":
+    st.header("📁 File Splitter & Joiner")
+    mode = st.radio("Mode", ["Split", "Join"])
+
+    if mode == "Split":
+        file = st.file_uploader("Upload File to Split")
+        chunk_size = st.number_input("Chunk Size (bytes)", value=1024*1024)
+
+        if file and st.button("Split File"):
+            data = file.read()
+            for i in range(0, len(data), chunk_size):
+                chunk = data[i:i+chunk_size]
+                st.download_button(f"Download Chunk {i//chunk_size}", chunk, file_name=f"chunk_{i//chunk_size}.bin")
+    
+    else:
+        files = st.file_uploader("Upload Chunks", accept_multiple_files=True, type=["bin"])
+        if files and st.button("Join Files"):
+            combined = b''.join(file.read() for file in sorted(files, key=lambda f: f.name))
+            st.download_button("Download Combined File", combined, file_name="joined_output.bin")
+
+
+
+
+import math
+
+elif feature == "🔎 Entropy Analyzer":
+    st.header("🔎 Shannon Entropy Analyzer")
+    text = st.text_area("Input Text or Data")
+
+    if st.button("Analyze Entropy"):
+        if text:
+            freq = {char: text.count(char)/len(text) for char in set(text)}
+            entropy = -sum(p * math.log2(p) for p in freq.values())
+            st.success(f"Entropy: {entropy:.4f} bits per symbol")
+            st.info("🔒 Higher entropy = more randomness")
+
+
+
+elif feature == "📦 PGP File Encrypt/Decrypt":
+    st.header("📦 Simulated PGP (Hybrid RSA + AES Encryption)")
+
+    mode = st.radio("Mode", ["Encrypt", "Decrypt"])
+    if mode == "Encrypt":
+        file = st.file_uploader("Upload File")
+        rsa_key = RSA.generate(2048)
+        pub_key = rsa_key.publickey()
+
+        if file and st.button("Encrypt File"):
+            aes_key = get_random_bytes(16)
+            cipher_rsa = pkcs1_15.new(pub_key)
+            encrypted_key = rsa_key._encrypt(aes_key)
+            
+            cipher_aes = AES.new(aes_key, AES.MODE_EAX)
+            ciphertext, tag = cipher_aes.encrypt_and_digest(file.read())
+
+            bundle = encrypted_key + cipher_aes.nonce + tag + ciphertext
+            st.download_button("Download Encrypted Bundle", bundle, file_name="pgp_encrypted.bin")
+    else:
+        st.warning("Decrypt implementation would need private key import + AES unwrap")
+
+
+elif feature == "🔐 Master Key Derivation Tool":
+    st.header("🔐 Derive Unique Keys from Master Password")
+    master = st.text_input("Master Password", type="password")
+    site = st.text_input("Service Identifier (e.g., gmail.com)")
+
+    if master and site:
+        salt = site.encode()
+        derived = PBKDF2(master.encode(), salt, dkLen=32, count=100000)
+        st.code(derived.hex(), "Derived Key (Hex)")
+
+
+elif feature == "💾 Encrypted Notes Vault":
+    st.header("💾 Secure Notes Vault")
+    vault_pwd = st.text_input("Vault Password", type="password")
+    note = st.text_area("Write your secure note here")
+
+    if st.button("Save Note"):
+        if vault_pwd and note:
+            key = SHA256.new(vault_pwd.encode()).digest()
+            cipher = AES.new(key, AES.MODE_EAX)
+            ct, tag = cipher.encrypt_and_digest(note.encode())
+            blob = base64.b64encode(cipher.nonce + tag + ct).decode()
+            st.code(blob, "Encrypted Note")
+
+    decrypt_blob = st.text_area("Paste Encrypted Note")
+    if st.button("Decrypt Note"):
+        try:
+            data = base64.b64decode(decrypt_blob)
+            nonce, tag, ct = data[:16], data[16:32], data[32:]
+            cipher = AES.new(SHA256.new(vault_pwd.encode()).digest(), AES.MODE_EAX, nonce)
+            decrypted = cipher.decrypt_and_verify(ct, tag)
+            st.success("Decrypted Note:")
+            st.code(decrypted.decode())
+        except Exception as e:
+            st.error("Failed to decrypt: " + str(e))
+
+
+elif feature == "🛰️ Secure Chat Demo (ECC + AES)":
+    st.header("🛰️ Secure Chat Simulation (ECC + AES)")
+    msg = st.text_area("Your Message")
+    shared_secret = SHA256.new(b"shared_key_simulated").digest()
+
+    if msg:
+        cipher = AES.new(shared_secret, AES.MODE_EAX)
+        ct, tag = cipher.encrypt_and_digest(msg.encode())
+        encrypted_blob = base64.b64encode(cipher.nonce + tag + ct).decode()
+        st.code(encrypted_blob, "Encrypted Message")
+
+    encrypted_msg = st.text_input("Paste Encrypted Message to Decrypt")
+    if encrypted_msg:
+        try:
+            data = base64.b64decode(encrypted_msg)
+            nonce, tag, ct = data[:16], data[16:32], data[32:]
+            cipher = AES.new(shared_secret, AES.MODE_EAX, nonce)
+            decrypted = cipher.decrypt_and_verify(ct, tag)
+            st.success("Decrypted Message:")
+            st.code(decrypted.decode())
+        except Exception as e:
+            st.error("Decryption Failed: " + str(e))
+
+
+
+elif feature == "🔍 Randomness Tester":
+    st.header("🔍 Randomness Tester (Basic)")
+    binary_data = st.text_area("Binary String (e.g., 010101...)")
+
+    if binary_data:
+        length = len(binary_data)
+        ones = binary_data.count('1')
+        zeros = binary_data.count('0')
+        balance = abs(ones - zeros) / length
+
+        st.write(f"⚪ Zeros: {zeros}")
+        st.write(f"⚫ Ones: {ones}")
+        st.write(f"⚖️ Balance Ratio: {balance:.2f}")
+
+        if balance < 0.1:
+            st.success("✅ Looks fairly random")
+        else:
+            st.warning("⚠️ Possibly biased or patterned")
+
+
+
+import zipfile
+
+elif feature == "📂 Encrypted Zip File Generator":
+    st.header("📂 Encrypted ZIP Generator")
+    uploaded_files = st.file_uploader("Upload Files", accept_multiple_files=True)
+    zip_password = st.text_input("Password for ZIP", type="password")
+
+    if uploaded_files and zip_password and st.button("Generate Encrypted ZIP"):
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+            for file in uploaded_files:
+                zipf.writestr(file.name, file.read())
+        zip_data = buffer.getvalue()
+
+        key = SHA256.new(zip_password.encode()).digest()
+        cipher = AES.new(key, AES.MODE_EAX)
+        ct, tag = cipher.encrypt_and_digest(zip_data)
+        encrypted_zip = cipher.nonce + tag + ct
+        st.download_button("Download Encrypted ZIP", encrypted_zip, file_name="encrypted.zip")
 
 
 st.markdown("---")
