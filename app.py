@@ -44,51 +44,53 @@ if api_key:
 feature = st.sidebar.selectbox(
     "Select Feature",
     [
-        "🔐 AES Encrypt/Decrypt", 
-        "🌀 ChaCha20 Encrypt/Decrypt",
-        "🔏 Asymmetric Cryptography", 
-        "📜 HMAC & Hash Functions", 
-        "🤖 AI Code Explainer",
-        "🔑 Password Strength Analyzer",
+        "🔑 AES Encrypt/Decrypt", 
+        "🌪️ ChaCha20 Encrypt/Decrypt",
+        "🔄 Asymmetric Cryptography", 
+        "🧮 HMAC & Hash Functions", 
+        "🧠 AI Code Explainer",
+        "💪 Password Strength Analyzer",
         "📊 Encryption Benchmark",
         "📱 QR Code Generator",
         "🔄 Format Converter",
-        "🎲 Secure Password Generator",
+        "🎯 Secure Password Generator",
         "⏱️ Hash Speed Test",
         "🔍 File Hash Verification",
-        "🌐 JWT Token Inspector",
-        "🔒 SSH Key Manager",
+        "🎫 JWT Token Inspector",
+        "🗝️ SSH Key Manager",
         "🕵️ Cipher Identifier",
         "🧮 Modular Calculator",
-        "🔁 Base Converter",
-        "🧠 Crypto Puzzle Game",
+        "🔢 Base Converter",
+        "🧩 Crypto Puzzle Game",
         
         # 💖 New Tools Below 💖
-        "🧬 ECC Key Exchange Visualizer",
-        "📅 TOTP Generator & Verifier",
-        "📁 File Splitter & Joiner",
-        "🔎 Entropy Analyzer",
-        "📦 PGP File Encrypt/Decrypt",
-        "🔐 Master Key Derivation Tool",
-        "💾 Encrypted Notes Vault",
-        "🛰️ Secure Chat Demo (ECC + AES)",
-        "🔍 Randomness Tester",
+        "📈 ECC Key Exchange Visualizer",
+        "⏰ TOTP Generator & Verifier",
+        "✂️ File Splitter & Joiner",
+        "📏 Entropy Analyzer",
+        "📨 PGP File Encrypt/Decrypt",
+        "🗄️ Master Key Derivation Tool",
+        "📝 Encrypted Notes Vault",
+        "💬 Secure Chat Demo (ECC + AES)",
+        "🎲 Randomness Tester",
         "✍️ File Signature Generator & Verifier",
         
         # 🚀 Next-level advanced tools
         
-        "🛡️ Post-Quantum Cryptography Simulator",
+        "🌌 Post-Quantum Cryptography Simulator",
         "🧹 Encrypted File Metadata Remover",
         "⛓️ Blockchain Hash Logger",
         
+        # 🔬 Advanced Cryptographic Tools
+        "🔮 Homomorphic Encryption Explorer",
+        "🎭 Zero-Knowledge Proof Generator",
+        "🌳 Merkle Tree Visualizer & Builder",
+        "🔱 Threshold Cryptography Simulator",
+        "⚡ Side-Channel Attack Demonstrator",
+        "🌠 Quantum Key Distribution Simulator",
+        "🛡️ Cryptographic Protocol Analyzer",
     ]
 )
-
-
-try:
-    long
-except NameError:
-    long = int
 
 
 # --- 1. AES Encrypt/Decrypt ---
@@ -1502,6 +1504,1109 @@ elif feature == "⛓️ Blockchain Hash Logger":
                 st.error("Failed to log hash")
         except Exception as e:
             st.error(f"API error: {e}")
+
+
+
+# --- 1. Homomorphic Encryption Explorer ---
+elif feature == "🔮 Homomorphic Encryption Explorer":
+    st.header("🔮 Homomorphic Encryption Explorer")
+    
+    st.markdown("""
+    ### Explore Partially Homomorphic Encryption
+    Homomorphic encryption allows computations on encrypted data without decrypting it first.
+    This demo illustrates the basic concepts using a simplified implementation.
+    """)
+    
+    he_tab1, he_tab2, he_tab3 = st.tabs(["Basic Demo", "Interactive Explorer", "Learning Resources"])
+    
+    with he_tab1:
+        st.subheader("Simple Homomorphic Operations")
+        
+        # Simple Paillier-like homomorphic encryption (for demonstration)
+        def simple_encrypt(value, public_key):
+            n, g = public_key
+            r = random.randint(1, n-1)
+            return (pow(g, value, n**2) * pow(r, n, n**2)) % (n**2)
+        
+        def add_encrypted(c1, c2, public_key):
+            n, _ = public_key
+            return (c1 * c2) % (n**2)
+        
+        # Generate demo keys
+        p, q = 17, 19
+        n = p * q
+        g = n + 1
+        public_key = (n, g)
+        
+        # Allow user to input two values
+        col1, col2 = st.columns(2)
+        with col1:
+            value1 = st.number_input("First Value", min_value=0, max_value=100, value=7)
+        with col2:
+            value2 = st.number_input("Second Value", min_value=0, max_value=100, value=9)
+        
+        if st.button("Encrypt and Compute"):
+            # Encrypt values
+            encrypted1 = simple_encrypt(value1, public_key)
+            encrypted2 = simple_encrypt(value2, public_key)
+            
+            # Perform homomorphic addition
+            encrypted_sum = add_encrypted(encrypted1, encrypted2, public_key)
+            
+            # Display results
+            st.write("#### Results")
+            
+            results_col1, results_col2 = st.columns(2)
+            with results_col1:
+                st.write("**Original Values:**")
+                st.write(f"Value 1: {value1}")
+                st.write(f"Value 2: {value2}")
+                st.write(f"Sum: {value1 + value2}")
+            
+            with results_col2:
+                st.write("**Encrypted Values:**")
+                st.write(f"Encrypted Value 1: {encrypted1}")
+                st.write(f"Encrypted Value 2: {encrypted2}")
+                st.write(f"Encrypted Sum: {encrypted_sum}")
+            
+            st.success(f"The homomorphic addition worked! {value1} + {value2} = {value1 + value2}")
+    
+    with he_tab2:
+        st.subheader("Interactive Homomorphic Properties")
+        operation = st.selectbox("Select Operation", ["Addition", "Multiplication"])
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            x = st.slider("Value x", 1, 50, 10)
+        with col2:
+            y = st.slider("Value y", 1, 50, 5)
+        
+        # Visual representation of homomorphic operations
+        fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+        
+        # Original value representations
+        ax[0].bar(['x', 'y'], [x, y], color=['blue', 'green'])
+        ax[0].set_title('Original Values')
+        
+        # Encrypted representations (abstract visualization)
+        ax[1].bar(['E(x)', 'E(y)'], [x, y], color=['blue', 'green'], alpha=0.5)
+        for i in range(30):  # Add noise visualization
+            ax[1].plot([0, 0], [random.random()*x, random.random()*x], 'r-', alpha=0.1)
+            ax[1].plot([1, 1], [random.random()*y, random.random()*y], 'r-', alpha=0.1)
+        ax[1].set_title('Encrypted Values (Conceptual)')
+        
+        # Result of operation
+        if operation == "Addition":
+            result = x + y
+            ax[2].bar(['x + y', 'Decrypted E(x) + E(y)'], [result, result], color='purple')
+            ax[2].set_title('Result of Addition')
+        else:  # Multiplication
+            result = x * y
+            ax[2].bar(['x * y', 'Decrypted E(x) * E(y)'], [result, result], color='purple')
+            ax[2].set_title('Result of Multiplication')
+            
+        st.pyplot(fig)
+        
+        st.info(f"This visualization shows how {operation.lower()} can be performed on encrypted data, yielding the same result as performing the operation on plaintext.")
+    
+    with he_tab3:
+        st.subheader("How Homomorphic Encryption Works")
+        st.markdown("""
+        ### Types of Homomorphic Encryption:
+        
+        1. **Partially Homomorphic Encryption (PHE)**: Supports either addition OR multiplication, but not both.
+           - Example: Paillier (addition), RSA (multiplication)
+           
+        2. **Somewhat Homomorphic Encryption (SWHE)**: Supports both operations but only for a limited number of operations.
+        
+        3. **Fully Homomorphic Encryption (FHE)**: Supports unlimited operations of both addition and multiplication.
+           - Based on lattice-based cryptography
+           - Computationally intensive
+        
+        ### Applications:
+        - Private data analytics
+        - Secure cloud computing
+        - Privacy-preserving machine learning
+        - Secure voting systems
+        """)
+
+
+# --- 2. Zero-Knowledge Proof Generator ---
+elif feature == "🎭 Zero-Knowledge Proof Generator":
+    st.header("🎭 Zero-Knowledge Proof Generator")
+    
+    st.markdown("""
+    ### Zero-Knowledge Proofs
+    Zero-knowledge proofs allow one party (the prover) to prove to another party (the verifier) 
+    that a statement is true, without revealing any information beyond the validity of the statement itself.
+    """)
+    
+    zk_tab1, zk_tab2, zk_tab3 = st.tabs(["Schnorr Protocol", "Password Verification", "Advanced ZK Concepts"])
+    
+    with zk_tab1:
+        st.subheader("Schnorr ZK Protocol Demo")
+        st.markdown("""
+        The Schnorr protocol allows a prover to demonstrate knowledge of a discrete logarithm 
+        without revealing the logarithm itself.
+        
+        In this demo, Alice will prove to Bob that she knows the secret value x, 
+        where y = g^x mod p, without revealing x.
+        """)
+        
+        # Define the parameters
+        p = 23  # A small prime for demonstration
+        g = 5   # A generator of the multiplicative group mod p
+        
+        # Alice's secret
+        secret_x = st.slider("Alice's secret value (x)", 1, 15, 7, help="This is the secret value Alice knows")
+        
+        # Calculate the public value y = g^x mod p
+        y = pow(g, secret_x, p)
+        
+        st.write(f"Public Information: p = {p}, g = {g}, y = {y}")
+        
+        if st.button("Generate Proof"):
+            # Alice's random commitment
+            k = random.randint(1, p-2)
+            r = pow(g, k, p)
+            
+            # Bob's challenge
+            c = random.randint(1, p-2)
+            
+            # Alice's response
+            s = (k - c * secret_x) % (p-1)
+            
+            # Verification
+            left_side = pow(g, s, p) * pow(y, c, p) % p
+            right_side = r
+            
+            # Display the proof steps
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### Proof Generation")
+                st.write(f"1. Alice chooses random k = {k}")
+                st.write(f"2. Alice computes r = g^k mod p = {r}")
+                st.write(f"3. Bob sends challenge c = {c}")
+                st.write(f"4. Alice computes s = k - c*x mod (p-1) = {s}")
+                st.write(f"5. Alice sends s to Bob")
+            
+            with col2:
+                st.markdown("#### Verification")
+                st.write(f"Bob computes g^s * y^c mod p = {left_side}")
+                st.write(f"Bob checks if this equals r = {right_side}")
+                
+                if left_side == right_side:
+                    st.success("Verification succeeded! Alice has proven she knows x without revealing it.")
+                else:
+                    st.error("Verification failed!")
+    
+    with zk_tab2:
+        st.subheader("Zero-Knowledge Password Verification")
+        st.markdown("""
+        This demonstrates how a password can be verified without actually sending the password to the verifier.
+        """)
+        
+        # User inputs
+        password = st.text_input("Enter a password", value="SecretPass123", type="password")
+        salt = "RandomSalt123"  # In practice, this would be generated and stored
+        
+        if st.button("Simulate ZK Password Verification"):
+            # Hash the password (this would be stored on the server)
+            import hashlib
+            stored_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+            
+            # ZK verification simulation steps
+            st.write("#### ZK Password Verification Steps")
+            
+            # Step 1: Client creates a proof
+            st.write("1. Client locally hashes the password with the salt")
+            st.write(f"2. Server already has stored hash: {stored_hash[:10]}...{stored_hash[-10:]}")
+            
+            # Step 3: Challenge-response (simplified)
+            challenge = random.randint(1000000, 9999999)
+            st.write(f"3. Server sends a challenge: {challenge}")
+            
+            # Response is a hash of the stored hash and the challenge
+            response = hashlib.sha256((stored_hash + str(challenge)).encode()).hexdigest()
+            st.write(f"4. Client computes response using stored hash and challenge: {response[:10]}...{response[-10:]}")
+            
+            # Server verification (simulated)
+            server_expected = hashlib.sha256((stored_hash + str(challenge)).encode()).hexdigest()
+            
+            if response == server_expected:
+                st.success("✅ Authentication successful! The server verified the password without seeing it.")
+            else:
+                st.error("❌ Authentication failed!")
+                
+            st.info("This is a simplified demonstration. Real ZK password systems use more complex cryptographic protocols.")
+    
+    with zk_tab3:
+        st.subheader("Advanced Zero-Knowledge Concepts")
+        
+        st.markdown("""
+        ### Modern Zero-Knowledge Proof Systems:
+        
+        1. **zk-SNARKs** (Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge)
+           - Used in Zcash cryptocurrency
+           - Allows for private transactions
+           - Requires a trusted setup phase
+        
+        2. **zk-STARKs** (Zero-Knowledge Scalable Transparent Arguments of Knowledge)
+           - No trusted setup required
+           - More scalable than SNARKs
+           - Post-quantum secure
+        
+        3. **Bulletproofs**
+           - Efficient for range proofs
+           - No trusted setup
+           - Used in Monero cryptocurrency
+        
+        ### Applications:
+        - Private cryptocurrency transactions
+        - Anonymous credentials
+        - Private smart contracts
+        - Identity verification without revealing personal data
+        - Secure voting systems
+        """)
+
+
+# --- 3. Merkle Tree Visualizer & Builder ---
+elif feature == "🌳 Merkle Tree Visualizer & Builder":
+    st.header("🌳 Merkle Tree Visualizer & Builder")
+    
+    st.markdown("""
+    ### Merkle Trees
+    A Merkle tree is a hash-based data structure that allows efficient and secure verification of content in large data structures.
+    Each leaf node contains the hash of a data block, and each non-leaf node contains the hash of its child nodes.
+    """)
+    
+    mt_tab1, mt_tab2, mt_tab3 = st.tabs(["Build Merkle Tree", "Verify Data", "Applications"])
+    
+    with mt_tab1:
+        st.subheader("Build Your Merkle Tree")
+        
+        # Define hash function for the tree
+        def hash_data(data):
+            return SHA256.new(data.encode()).hexdigest()
+        
+        # Build Merkle Tree from list of data items
+        def build_merkle_tree(data_list):
+            if len(data_list) == 0:
+                return None
+            
+            # Create leaf nodes by hashing data
+            leaves = [hash_data(item) for item in data_list]
+            
+            # If odd number of items, duplicate the last one
+            if len(leaves) % 2 == 1:
+                leaves.append(leaves[-1])
+            
+            # Store all nodes for visualization
+            all_nodes = [leaves]
+            
+            # Build the tree bottom-up
+            current_level = leaves
+            while len(current_level) > 1:
+                next_level = []
+                
+                # Process pairs of nodes
+                for i in range(0, len(current_level), 2):
+                    if i + 1 < len(current_level):
+                        combined = current_level[i] + current_level[i + 1]
+                        parent_hash = hash_data(combined)
+                        next_level.append(parent_hash)
+                    else:
+                        # If odd number of nodes, promote the last one
+                        next_level.append(current_level[i])
+                
+                all_nodes.append(next_level)
+                current_level = next_level
+            
+            return {
+                "root": current_level[0],
+                "all_nodes": all_nodes
+            }
+        
+        # User inputs
+        data_input = st.text_area("Enter data items (one per line):", 
+                                   value="Transaction 1\nTransaction 2\nTransaction 3\nTransaction 4")
+        
+        data_items = [item.strip() for item in data_input.split("\n") if item.strip()]
+        
+        if st.button("Build Merkle Tree"):
+            if not data_items:
+                st.error("Please enter at least one data item")
+            else:
+                tree = build_merkle_tree(data_items)
+                
+                # Display Merkle Root
+                st.subheader("Merkle Root")
+                st.code(tree["root"], language="bash")
+                
+                # Visualize the tree
+                st.subheader("Tree Visualization")
+                
+                # Calculate tree levels and nodes
+                levels = len(tree["all_nodes"])
+                
+                # Create tree visualization
+                fig, ax = plt.subplots(figsize=(10, levels * 2))
+                ax.set_xlim(0, len(data_items) * 2)
+                ax.set_ylim(0, levels * 1.5)
+                ax.axis('off')
+                
+                # Plot nodes
+                for level_idx, level_nodes in enumerate(reversed(tree["all_nodes"])):
+                    y_pos = level_idx * 1.5 + 0.5
+                    node_width = len(data_items) * 2 / len(level_nodes)
+                    
+                    for node_idx, node_hash in enumerate(level_nodes):
+                        x_pos = node_width * (node_idx + 0.5)
+                        
+                        # Add node as a circle
+                        circle = plt.Circle((x_pos, y_pos), 0.3, fill=True, color='skyblue', alpha=0.7)
+                        ax.add_patch(circle)
+                        
+                        # Add short hash text
+                        ax.text(x_pos, y_pos, f"{node_hash[:6]}...", 
+                                ha='center', va='center', fontsize=8)
+                        
+                        # Add connections to parent nodes (if not root)
+                        if level_idx < levels - 1:
+                            parent_level = level_idx + 1
+                            parent_nodes = len(tree["all_nodes"][-(parent_level+1)])
+                            parent_width = len(data_items) * 2 / parent_nodes
+                            parent_idx = node_idx // 2
+                            parent_x = parent_width * (parent_idx + 0.5)
+                            parent_y = parent_level * 1.5 + 0.5
+                            
+                            ax.plot([x_pos, parent_x], [y_pos + 0.3, parent_y - 0.3], 'k-', alpha=0.5)
+                
+                # Add data labels at the bottom
+                if len(data_items) <= 8:  # Only show labels for small trees
+                    node_width = len(data_items) * 2 / len(tree["all_nodes"][0])
+                    for idx, item in enumerate(data_items):
+                        x_pos = node_width * (idx + 0.5)
+                        y_pos = 0
+                        ax.text(x_pos, y_pos, item, ha='center', va='top', fontsize=8, color='green')
+                
+                st.pyplot(fig)
+                
+                # Display hashes
+                st.subheader("Node Hashes by Level")
+                for i, level in enumerate(reversed(tree["all_nodes"])):
+                    level_name = "Root" if i == 0 else f"Level {levels - i - 1}"
+                    with st.expander(f"{level_name} ({len(level)} nodes)"):
+                        for j, node in enumerate(level):
+                            st.code(f"Node {j}: {node}", language="bash")
+    
+    with mt_tab2:
+        st.subheader("Merkle Proof Verification")
+        
+        st.markdown("""
+        A Merkle proof allows verification that a specific data block is part of the tree
+        without requiring the entire tree.
+        """)
+        
+        # Sample data for demonstration
+        sample_data = ["Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Honeydew"]
+        
+        # Let user select sample data or enter custom
+        data_option = st.radio("Data Source", ["Use Sample Data", "Custom Data"])
+        
+        if data_option == "Use Sample Data":
+            data_for_proof = sample_data
+        else:
+            custom_data = st.text_area("Enter custom data (one item per line)", "Item1\nItem2\nItem3\nItem4")
+            data_for_proof = [item.strip() for item in custom_data.split('\n') if item.strip()]
+        
+        # Select an item to verify
+        if data_for_proof:
+            item_to_verify = st.selectbox("Select item to verify", data_for_proof)
+            
+            if st.button("Generate and Verify Proof"):
+                tree = build_merkle_tree(data_for_proof)
+                root_hash = tree["root"]
+                
+                # Find the index of the item
+                item_index = data_for_proof.index(item_to_verify)
+                
+                # Generate the proof (simplified)
+                proof = []
+                index = item_index
+                
+                for level in tree["all_nodes"][:-1]:  # Exclude the root level
+                    is_right = index % 2 == 0
+                    if is_right and index + 1 < len(level):
+                        # If we're a left node, we need the right sibling
+                        sibling_index = index + 1
+                        sibling_position = "right"
+                    else:
+                        # If we're a right node, we need the left sibling
+                        sibling_index = index - 1
+                        sibling_position = "left"
+                    
+                    if 0 <= sibling_index < len(level):
+                        proof.append({
+                            "hash": level[sibling_index],
+                            "position": sibling_position
+                        })
+                    
+                    # Update index for next level
+                    index = index // 2
+                
+                # Display the proof
+                st.subheader("Merkle Proof")
+                
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.write("**Item to Verify:**", item_to_verify)
+                    st.write("**Item Hash:**", hash_data(item_to_verify))
+                    st.write("**Merkle Root:**", root_hash)
+                
+                with col2:
+                    st.write("**Proof Elements:**")
+                    for i, element in enumerate(proof):
+                        st.write(f"{i+1}. {element['position']} sibling: {element['hash'][:10]}...")
+                
+                # Verify the proof
+                current_hash = hash_data(item_to_verify)
+                
+                verification_steps = []
+                verification_steps.append(f"Start with leaf hash: {current_hash[:10]}...")
+                
+                for i, element in enumerate(proof):
+                    if element["position"] == "right":
+                        combined = current_hash + element["hash"]
+                    else:
+                        combined = element["hash"] + current_hash
+                    current_hash = hash_data(combined)
+                    verification_steps.append(f"Combined with {element['position']} sibling, new hash: {current_hash[:10]}...")
+                
+                st.subheader("Verification Steps")
+                for step in verification_steps:
+                    st.write(step)
+                
+                if current_hash == root_hash:
+                    st.success(f"✅ Verification successful! The item '{item_to_verify}' is part of the Merkle tree.")
+                else:
+                    st.error("❌ Verification failed! The item is not part of the Merkle tree.")
+    
+    with mt_tab3:
+        st.subheader("Merkle Tree Applications")
+        
+        st.markdown("""
+        ### Common Uses of Merkle Trees:
+        
+        1. **Blockchain Technology**
+           - Bitcoin and other cryptocurrencies use Merkle trees to efficiently verify transactions
+           - Allows lightweight clients to verify transactions without downloading the entire blockchain
+        
+        2. **Git Version Control**
+           - Git uses a structure similar to Merkle trees to track file changes
+           - Enables efficient integrity checking and history tracking
+        
+        3. **Distributed File Systems**
+           - IPFS (InterPlanetary File System) uses Merkle DAGs for content addressing
+           - Enables content-based addressing and deduplication
+        
+        4. **Certificate Transparency**
+           - Log servers use Merkle trees to provide cryptographic proof of certificate inclusion
+        
+        5. **Data Integrity in Distributed Systems**
+           - Quickly verify that data hasn't been tampered with
+           - Efficiently synchronize data between distributed nodes
+        """)
+
+
+# --- 4. Threshold Cryptography Simulator ---
+elif feature == "🔱 Threshold Cryptography Simulator":
+    st.header("🔱 Threshold Cryptography Simulator")
+    
+    st.markdown("""
+    ### Threshold Cryptography
+    Threshold cryptography distributes cryptographic operations across multiple parties, 
+    requiring a minimum number (threshold) of parties to collaborate for operations like 
+    decryption or signing.
+    """)
+    
+    tc_tab1, tc_tab2, tc_tab3 = st.tabs(["Shamir's Secret Sharing", "Threshold Signatures", "Applications"])
+    
+    with tc_tab1:
+        st.subheader("Shamir's Secret Sharing")
+        st.markdown("""
+        Shamir's Secret Sharing allows splitting a secret into n shares, 
+        requiring at least k shares to reconstruct the original secret.
+        """)
+        
+        # Helper functions for Shamir's Secret Sharing
+        def mod_inverse(x, mod):
+            """Find modular multiplicative inverse"""
+            return pow(x, mod - 2, mod)
+        
+        def evaluate_polynomial(coefficients, x, prime):
+            """Evaluate polynomial at point x"""
+            result = 0
+            for coeff in reversed(coefficients):
+                result = (result * x + coeff) % prime
+            return result
+        
+        def generate_shares(secret, n, k, prime):
+            """Generate n shares with threshold k for the secret"""
+            coefficients = [secret] + [random.randint(1, prime-1) for _ in range(k-1)]
+            shares = [(i, evaluate_polynomial(coefficients, i, prime)) for i in range(1, n+1)]
+            return shares
+        
+        def reconstruct_secret(shares, k, prime):
+            """Reconstruct secret from k shares using Lagrange interpolation"""
+            # Only use the first k shares
+            shares = shares[:k]
+            
+            secret = 0
+            for i, (x_i, y_i) in enumerate(shares):
+                numerator = 1
+                denominator = 1
+                
+                for j, (x_j, _) in enumerate(shares):
+                    if i != j:
+                        numerator = (numerator * (0 - x_j)) % prime
+                        denominator = (denominator * (x_i - x_j)) % prime
+                
+                lagrange = (y_i * numerator * mod_inverse(denominator, prime)) % prime
+                secret = (secret + lagrange) % prime
+            
+            return secret
+        
+        # User inputs
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            secret = st.number_input("Secret Value", min_value=1, max_value=1000, value=42)
+            n = st.number_input("Total Number of Shares (n)", min_value=2, max_value=10, value=5)
+        
+        with col2:
+            k = st.number_input("Threshold (k)", min_value=2, max_value=10, value=3)
+            
+        st.write(f"This will split the secret {secret} into {n} shares, requiring at least {k} shares to reconstruct.")
+        
+        # Large prime for finite field operations
+        prime = 2**13 - 1  # 8191, a Mersenne prime
+        
+        if st.button("Generate Shares"):
+            # Generate the shares
+            shares = generate_shares(secret, n, k, prime)
+            
+            # Display the shares
+            st.subheader("Generated Shares")
+            shares_data = pd.DataFrame(shares, columns=["Share ID", "Share Value"])
+            st.dataframe(shares_data)
+            
+            # Reconstruction demonstration
+            st.subheader("Secret Reconstruction Demonstration")
+            
+            available_shares = st.multiselect(
+                "Select shares to use for reconstruction:",
+                options=[f"Share {i+1}" for i in range(n)],
+                default=[f"Share {i+1}" for i in range(k)]
+            )
+            
+            if st.button("Reconstruct Secret"):
+                if len(available_shares) < k:
+                    st.warning(f"Need at least {k} shares to reconstruct the secret. You selected {len(available_shares)}.")
+                else:
+                    # Get the indices of selected shares
+                    selected_indices = [int(share.split()[1]) - 1 for share in available_shares]
+                    selected_shares = [shares[i] for i in selected_indices]
+                    
+                    # Reconstruct the secret
+                    reconstructed = reconstruct_secret(selected_shares, k, prime)
+                    
+                    if reconstructed == secret:
+                        st.success(f"Successfully reconstructed the secret: {reconstructed}")
+                    else:
+                        st.error(f"Failed to reconstruct the correct secret. Got: {reconstructed}, Expected: {secret}")
+                    
+                    # Visual explanation
+                    fig, ax = plt.subplots()
+                    
+                    # Plot all shares
+                    x_values = [share[0] for share in shares]
+                    y_values = [share[1] for share in shares]
+                    ax.scatter(x_values, y_values, color='blue', alpha=0.3, label='All Shares')
+                    
+                    # Highlight selected shares
+                    selected_x = [share[0] for share in selected_shares]
+                    selected_y = [share[1] for share in selected_shares]
+                    ax.scatter(selected_x, selected_y, color='green', label='Selected Shares')
+                    
+                    # Mark the secret (y-intercept)
+                    ax.scatter(0, secret, color='red', marker='*', s=200, label='Secret (y-intercept)')
+                    
+                    ax.set_title('Shamir Secret Sharing Visualization')
+                    ax.set_xlabel('x')
+                    ax.set_ylabel('y')
+                    ax.legend()
+                    
+                    st.pyplot(fig)
+    
+    with tc_tab2:
+        st.subheader("Threshold Signatures")
+        
+        st.markdown("""
+        Threshold signatures allow a group of participants to collectively sign a message,
+        where at least a threshold number must participate for a valid signature.
+        
+        This simplified demo illustrates the concept using a (t, n) threshold scheme.
+        """)
+        
+        # User inputs for threshold signatures
+        t = st.slider("Threshold (t)", min_value=2, max_value=5, value=3)
+        n = st.slider("Total Parties (n)", min_value=t, max_value=7, value=5)
+        
+        message = st.text_input("Message to Sign", value="Important agreement document")
+        
+        if st.button("Simulate Threshold Signing"):
+            # Simulate key generation
+            st.write("#### Step 1: Distributed Key Generation")
+            
+            # Simplified simulation - in reality, this would be a complex multi-party protocol
+            party_keys = []
+            for i in range(n):
+                party_keys.append({
+                    "id": i+1,
+                    "private_share": random.randint(1, 1000),
+                    "public_share": random.randint(1000, 2000)
+                })
+            
+            # Display key shares
+            party_df = pd.DataFrame([{
+                "Party ID": key["id"],
+                "Private Key Share": f"sk_{key['id']} (hidden)",
+                "Public Key Share": f"pk_{key['id']} = {key['public_share']}"
+            } for key in party_keys])
+            
+            st.dataframe(party_df)
+            
+            # Simulate message signing
+            st.write("#### Step 2: Partial Signatures Generation")
+            
+            # Let user select which parties participate
+            participating_parties = st.multiselect(
+                "Select participating parties:",
+                options=[f"Party {i+1}" for i in range(n)],
+                default=[f"Party {i+1}" for i in range(t)]
+            )
+            
+            if len(participating_parties) < t:
+                st.warning(f"Need at least {t} parties to create a valid signature. You selected {len(participating_parties)}.")
+            else:
+                # Generate partial signatures
+                partial_sigs = []
+                for party in participating_parties:
+                    party_id = int(party.split()[1]) - 1
+                    party_info = party_keys[party_id]
+                    
+                    # Simplified signature calculation
+                    sig_value = hashlib.sha256((message + str(party_info["private_share"])).encode()).hexdigest()[:8]
+                    
+                    partial_sigs.append({
+                        "party_id": party_info["id"],
+                        "signature": sig_value
+                    })
+                
+                # Display partial signatures
+                st.write("**Partial Signatures:**")
+                for sig in partial_sigs:
+                    st.code(f"Party {sig['party_id']}: {sig['signature']}", language="bash")
+                
+                # Simulate signature combining
+                st.write("#### Step 3: Signature Combination")
+                
+                # In a real implementation, this would involve cryptographic operations
+                combined_sig = hashlib.sha256(("".join([sig["signature"] for sig in partial_sigs])).encode()).hexdigest()
+                
+                st.write("**Combined Signature:**")
+                st.code(combined_sig, language="bash")
+                
+                st.success("✅ Valid threshold signature generated successfully!")
+                
+                # Explain verification process
+                st.write("#### Step 4: Signature Verification")
+                st.write("""
+                In a real threshold signature scheme:
+                1. The verifier would use the group's public key to verify the signature
+                2. The verifier cannot tell which specific parties participated
+                3. The signature is exactly the same size as a regular signature
+                """)
+    
+    with tc_tab3:
+        st.subheader("Threshold Cryptography Applications")
+        
+        st.markdown("""
+        ### Applications of Threshold Cryptography:
+        
+        1. **Cryptocurrency Wallets**
+           - Multi-signature wallets require multiple keys to authorize transactions
+           - Enhances security by distributing trust among multiple parties or devices
+        
+        2. **Certificate Authorities**
+           - Distribute the ability to sign certificates across multiple servers
+           - Prevents a single compromised server from issuing fraudulent certificates
+        
+        3. **Secure Key Management**
+           - Protect high-value encryption keys from single-point failures
+           - Keys can be reconstructed only when needed with proper authorization
+        
+        4. **Distributed Systems Security**
+           - Consensus mechanisms in blockchain networks
+           - Distributed access control for critical resources
+        
+        5. **Secure Multi-Party Computation**
+           - Allow multiple parties to compute functions over private inputs
+           - Applications in privacy-preserving analytics and secure auctions
+        """)
+
+
+# --- 5. Side-Channel Attack Demonstrator ---
+elif feature == "⚡ Side-Channel Attack Demonstrator":
+    st.header("⚡ Side-Channel Attack Demonstrator")
+    
+    st.markdown("""
+    ### Side-Channel Attacks
+    Side-channel attacks extract secrets by analyzing physical information leaked during computation,
+    such as timing, power consumption, electromagnetic emissions, or sound.
+    """)
+    
+    sc_tab1, sc_tab2, sc_tab3 = st.tabs(["Timing Attack Demo", "Power Analysis Visualization", "Side-Channel Defenses"])
+    
+    with sc_tab1:
+        st.subheader("Password Timing Attack Simulation")
+        
+        st.markdown("""
+        This demonstrates how comparing passwords character-by-character can leak timing information,
+        allowing an attacker to guess the password one character at a time.
+        """)
+        
+        # Vulnerable password comparison (for demonstration purposes)
+        def vulnerable_password_check(stored_password, input_password):
+            results = []
+            for i in range(min(len(stored_password), len(input_password))):
+                # Check character by character
+                match = stored_password[i] == input_password[i]
+                results.append({
+                    "position": i,
+                    "stored_char": stored_password[i],
+                    "input_char": input_password[i],
+                    "match": match,
+                    "time_ms": random.randint(5, 15) if match else random.randint(1, 5)  # Simulated time difference
+                })
+                
+                # Early exit on mismatch (vulnerable to timing attacks)
+                if not match:
+                    break
+            
+            return results
+        
+        # Set a secret password for demonstration
+        stored_password = "S3cr3tP@ss"
+        
+        # User input for testing
+        test_password = st.text_input("Enter a test password:", value="S3cr", max_chars=len(stored_password))
+        
+        if st.button("Test Password Comparison"):
+            results = vulnerable_password_check(stored_password, test_password)
+            
+            # Display results
+            st.subheader("Character-by-Character Comparison")
+            
+            # Create visualizations
+            char_positions = [r["position"] for r in results]
+            char_times = [r["time_ms"] for r in results]
+            
+            # Timing visualization
+            fig, ax = plt.subplots(figsize=(10, 4))
+            bars = ax.bar(char_positions, char_times, color=['green' if r["match"] else 'red' for r in results])
+            
+            ax.set_xlabel('Character Position')
+            ax.set_ylabel('Processing Time (ms)')
+            ax.set_title('Password Comparison Timing')
+            
+            # Add time labels on top of bars
+            for bar in bars:
+                height = bar.get_height()
+                ax.annotate(f'{height}ms',
+                           xy=(bar.get_x() + bar.get_width() / 2, height),
+                           xytext=(0, 3),
+                           textcoords="offset points",
+                           ha='center', va='bottom')
+            
+            st.pyplot(fig)
+            
+            # Display character-by-character results
+            results_df = pd.DataFrame([{
+                "Position": r["position"],
+                "Expected": r["stored_char"],
+                "Input": r["input_char"],
+                "Match": "✓" if r["match"] else "✗",
+                "Time (ms)": r["time_ms"]
+            } for r in results])
+            
+            st.dataframe(results_df)
+            
+            # Explanation
+            if any(not r["match"] for r in results):
+                last_match = max([r["position"] for r in results if r["match"]], default=-1)
+                st.warning(f"""
+                **Timing Attack Vulnerability Detected!**
+                
+                The comparison stops at the first mismatched character (position {last_match + 1}).
+                An attacker could use this timing difference to guess the password character by character.
+                """)
+            else:
+                st.success("All characters match up to the input length!")
+            
+            if len(test_password) < len(stored_password):
+                st.info(f"The input is shorter than the stored password ({len(test_password)} vs {len(stored_password)} characters).")
+            
+            # Constant-time alternative
+            st.subheader("Secure Constant-Time Comparison")
+            st.markdown("""
+            A secure implementation would compare all characters regardless of mismatches,
+            taking the same amount of time regardless of how many characters match.
+            
+            ```python
+            def constant_time_compare(a, b):
+                if len(a) != len(b):
+                    return False
+                    
+                result = 0
+                for x, y in zip(a, b):
+                    result |= ord(x) ^ ord(y)
+                return result == 0
+            ```
+            
+            This method:
+            1. Compares all characters using XOR (^)
+            2. Combines results with OR (|)
+            3. Returns true only if all characters match
+            4. Takes the same time regardless of where mismatches occur
+            """)
+    
+    with sc_tab2:
+        st.subheader("Power Analysis Attack Visualization")
+        
+        st.markdown("""
+        Power analysis attacks extract secrets by analyzing power consumption patterns during cryptographic operations.
+        This visualization demonstrates the concept of Simple Power Analysis (SPA) and Differential Power Analysis (DPA).
+        """)
+        
+        # Generate simulated power traces
+        def generate_power_trace(key, with_leakage=True):
+            trace = []
+            baseline = [10 + random.random() * 2 for _ in range(20)]  # Baseline power consumption
+            
+            for bit in key:
+                if bit == '1':
+                    # Higher power for 1-bits (if leakage is enabled)
+                    if with_leakage:
+                        segment = [15 + random.random() * 3 for _ in range(10)]
+                    else:
+                        segment = [12 + random.random() * 2 for _ in range(10)]
+                else:
+                    # Lower power for 0-bits
+                    segment = [12 + random.random() * 2 for _ in range(10)]
+                
+                trace.extend(segment)
+            
+            # Add noise
+            noise_level = random.uniform(0.5, 1.5)
+            noisy_trace = [p + random.normalvariate(0, noise_level) for p in baseline + trace]
+            return noisy_trace
+        
+        # Demo options
+        key_length = st.slider("Secret Key Length (bits)", min_value=4, max_value=16, value=8)
+        secret_key = ''.join([random.choice(['0', '1']) for _ in range(key_length)])
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            show_key = st.checkbox("Show Secret Key", value=False)
+        with col2:
+            leakage = st.checkbox("Enable Power Leakage", value=True)
+            
+        if show_key:
+            st.code(f"Secret Key: {secret_key}", language="bash")
+            
+        attack_type = st.radio("Attack Visualization", ["Simple Power Analysis (SPA)", "Differential Power Analysis (DPA)"])
+        
+        if st.button("Generate Power Traces"):
+            if attack_type == "Simple Power Analysis (SPA)":
+                # Generate a power trace for the key
+                trace = generate_power_trace(secret_key, leakage)
+                
+                # Plot the trace
+                fig, ax = plt.subplots(figsize=(10, 5))
+                x_vals = list(range(len(trace)))
+                ax.plot(x_vals, trace, 'b-')
+                
+                # Mark the bit regions if showing key
+                if show_key:
+                    bit_width = 10
+                    baseline_length = 20
+                    
+                    for i, bit in enumerate(secret_key):
+                        start_x = baseline_length + i * bit_width
+                        mid_x = start_x + bit_width // 2
+                        color = 'red' if bit == '1' else 'green'
+                        
+                        # Add shaded region
+                        ax.axvspan(start_x, start_x + bit_width, alpha=0.2, color=color)
+                        # Add bit value
+                        ax.text(mid_x, max(trace) + 1, bit, ha='center')
+                
+                ax.set_title('Power Consumption Trace')
+                ax.set_xlabel('Time')
+                ax.set_ylabel('Power Consumption (mW)')
+                
+                if leakage:
+                    ax.text(0.05, 0.95, "Vulnerable Implementation", transform=ax.transAxes, 
+                           bbox=dict(facecolor='red', alpha=0.2))
+                else:
+                    ax.text(0.05, 0.95, "Protected Implementation", transform=ax.transAxes,
+                           bbox=dict(facecolor='green', alpha=0.2))
+                
+                st.pyplot(fig)
+                
+                # Explanation
+                if leakage:
+                    st.warning("""
+                    **Simple Power Analysis Vulnerability:**
+                    
+                    The power consumption pattern clearly shows differences between 0 and 1 bits.
+                    An attacker with physical access to the device could measure these power differences
+                    to recover the secret key directly from a single trace.
+                    """)
+                else:
+                    st.success("""
+                    **Protected Implementation:**
+                    
+                    This implementation uses constant-power operations, making it difficult to
+                    distinguish between 0 and 1 bits based on power consumption.
+                    """)
+                
+            else:  # Differential Power Analysis
+                # Generate multiple traces for statistical analysis
+                num_traces = 20
+                traces = []
+                
+                for i in range(num_traces):
+                    trace = generate_power_trace(secret_key, leakage)
+                    traces.append(trace)
+                
+                # Plot multiple traces
+                fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
+                
+                # Plot individual traces
+                for i, trace in enumerate(traces):
+                    ax1.plot(trace, alpha=0.3, color='blue')
+                
+                ax1.set_title(f'Multiple Power Traces ({num_traces} runs)')
+                ax1.set_xlabel('Time')
+                ax1.set_ylabel('Power (mW)')
+                
+                # Plot the average trace
+                avg_trace = [sum(t[i] for t in traces) / len(traces) for i in range(len(traces[0]))]
+                ax2.plot(avg_trace, color='red', linewidth=2)
+                ax2.set_title('Average Power Trace (DPA Result)')
+                ax2.set_xlabel('Time')
+                ax2.set_ylabel('Power (mW)')
+                
+                # Mark the bit regions if showing key
+                if show_key:
+                    bit_width = 10
+                    baseline_length = 20
+                    
+                    for i, bit in enumerate(secret_key):
+                        start_x = baseline_length + i * bit_width
+                        mid_x = start_x + bit_width // 2
+                        color = 'red' if bit == '1' else 'green'
+                        
+                        # Add shaded region to average plot
+                        ax2.axvspan(start_x, start_x + bit_width, alpha=0.2, color=color)
+                        # Add bit value
+                        ax2.text(mid_x, max(avg_trace) + 0.5, bit, ha='center')
+                
+                plt.tight_layout()
+                st.pyplot(fig)
+                
+                # Analysis and explanation
+                if leakage:
+                    st.warning("""
+                    **Differential Power Analysis Results:**
+                    
+                    By averaging multiple power traces, the signal-to-noise ratio improves.
+                    Statistical differences in power consumption become visible,
+                    allowing an attacker to recover the key even when individual traces are noisy.
+                    """)
+                else:
+                    st.success("""
+                    **Protected Against DPA:**
+                    
+                    This implementation uses constant-power operations and additional 
+                    countermeasures like random masking of operations to resist statistical analysis.
+                    """)
+    
+    with sc_tab3:
+        st.subheader("Side-Channel Attack Defenses")
+        
+        st.markdown("""
+        ### Common Side-Channel Attack Types:
+        
+        1. **Timing Attacks**
+           - Extract secrets by measuring operation execution time
+           - Example: Password comparison that exits early on first mismatch
+        
+        2. **Power Analysis Attacks**
+           - Simple Power Analysis (SPA): Direct observation of power patterns
+           - Differential Power Analysis (DPA): Statistical analysis of many traces
+        
+        3. **Electromagnetic Analysis**
+           - Similar to power analysis but uses EM emissions
+           - Can be performed from a distance without direct contact
+        
+        4. **Acoustic Analysis**
+           - Listening to sounds produced by hardware
+           - Examples: Keyboard acoustic attacks, CPU fan noise analysis
+        
+        5. **Cache Timing Attacks**
+           - Exploits timing differences in CPU cache access
+           - Can be used for cross-VM attacks in cloud environments
+        
+        ### Defense Mechanisms:
+        
+        1. **Constant-Time Operations**
+           - Ensure cryptographic operations take the same time regardless of the data
+           - Avoid data-dependent branches and array accesses
+        
+        2. **Balanced Power Consumption**
+           - Ensure operations consume the same power regardless of the data
+           - Implement dual-rail logic for hardware cryptographic modules
+        
+        3. **Random Masking**
+           - Add randomness to computations to hide patterns
+           - Example: Blinding techniques for RSA
+        
+        4. **Physical Shielding**
+           - Faraday cages to prevent EM leakage
+           - Sound dampening for acoustic attacks
+        
+        5. **Noise Addition**
+           - Add random delays or operations to obscure timing patterns
+           - Generate random power consumption patterns
+        """)
+
+
 
 
 
