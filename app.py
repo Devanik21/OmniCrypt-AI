@@ -94,7 +94,7 @@ feature = st.sidebar.selectbox(
 
 
 # --- 1. AES Encrypt/Decrypt ---
-if feature == "🔐 AES Encrypt/Decrypt":
+if feature == "🔑 AES Encrypt/Decrypt":
     st.header("🔐 AES File Encryption / Decryption")
     
     # New addition: KDF options
@@ -150,7 +150,7 @@ if feature == "🔐 AES Encrypt/Decrypt":
                 st.error(f"❌ Decryption Failed – {str(e)}")
 
 # --- 2. ChaCha20 Encrypt/Decrypt (NEW FEATURE) ---
-elif feature == "🌀 ChaCha20 Encrypt/Decrypt":
+elif feature == "🌪️ ChaCha20 Encrypt/Decrypt":
     st.header("🌀 ChaCha20-Poly1305 Encryption")
     st.markdown("Modern, high-performance encryption algorithm")
     
