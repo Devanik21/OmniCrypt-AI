@@ -1216,27 +1216,63 @@ elif feature == "🔎 Entropy Analyzer":
 
 
 
+from Crypto.Cipher import PKCS1_OAEP
+
 elif feature == "📦 PGP File Encrypt/Decrypt":
     st.header("📦 Simulated PGP (Hybrid RSA + AES Encryption)")
 
     mode = st.radio("Mode", ["Encrypt", "Decrypt"])
+
     if mode == "Encrypt":
-        file = st.file_uploader("Upload File")
-        rsa_key = RSA.generate(2048)
-        pub_key = rsa_key.publickey()
+        file = st.file_uploader("Upload File to Encrypt")
+        if file:
+            if st.button("Encrypt File"):
+                rsa_key = RSA.generate(2048)
+                public_key = rsa_key.publickey()
+                
+                # Encrypt AES key using RSA (PKCS1_OAEP)
+                aes_key = get_random_bytes(16)
+                cipher_rsa = PKCS1_OAEP.new(public_key)
+                encrypted_key = cipher_rsa.encrypt(aes_key)
+                
+                # Encrypt file using AES
+                cipher_aes = AES.new(aes_key, AES.MODE_EAX)
+                ciphertext, tag = cipher_aes.encrypt_and_digest(file.read())
+                
+                # Format: [RSA_encrypted_AES_key][AES_nonce][AES_tag][ciphertext]
+                bundle = encrypted_key + cipher_aes.nonce + tag + ciphertext
+                
+                st.download_button("Download Encrypted Bundle", bundle, file_name="pgp_encrypted.bin")
+                
+                # Also let user save private key
+                st.download_button("Download RSA Private Key", rsa_key.export_key(), file_name="rsa_private.pem")
+                st.info("💡 Save your RSA private key safely for decryption later.")
 
-        if file and st.button("Encrypt File"):
-            aes_key = get_random_bytes(16)
-            cipher_rsa = pkcs1_15.new(pub_key)
-            encrypted_key = rsa_key._encrypt(aes_key)
-            
-            cipher_aes = AES.new(aes_key, AES.MODE_EAX)
-            ciphertext, tag = cipher_aes.encrypt_and_digest(file.read())
+    else:  # Decrypt mode
+        encrypted_file = st.file_uploader("Upload Encrypted File")
+        private_key_file = st.file_uploader("Upload RSA Private Key (PEM)", type=["pem"])
 
-            bundle = encrypted_key + cipher_aes.nonce + tag + ciphertext
-            st.download_button("Download Encrypted Bundle", bundle, file_name="pgp_encrypted.bin")
-    else:
-        st.warning("Decrypt implementation would need private key import + AES unwrap")
+        if encrypted_file and private_key_file and st.button("Decrypt File"):
+            try:
+                private_key = RSA.import_key(private_key_file.read())
+                cipher_rsa = PKCS1_OAEP.new(private_key)
+
+                bundle_data = encrypted_file.read()
+                key_size = private_key.size_in_bytes()
+
+                enc_aes_key = bundle_data[:key_size]
+                nonce = bundle_data[key_size:key_size+16]
+                tag = bundle_data[key_size+16:key_size+32]
+                ciphertext = bundle_data[key_size+32:]
+
+                aes_key = cipher_rsa.decrypt(enc_aes_key)
+                cipher_aes = AES.new(aes_key, AES.MODE_EAX, nonce=nonce)
+                decrypted = cipher_aes.decrypt_and_verify(ciphertext, tag)
+
+                st.download_button("Download Decrypted File", decrypted, file_name="decrypted_output.bin")
+                st.success("✅ File successfully decrypted!")
+            except Exception as e:
+                st.error(f"❌ Decryption failed: {str(e)}")
 
 
 elif feature == "🔐 Master Key Derivation Tool":
