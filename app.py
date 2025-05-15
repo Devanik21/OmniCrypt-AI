@@ -24,6 +24,7 @@ import pyotp
 import math
 import time  # ← Needed for countdown!
 import zipfile
+from Crypto.Cipher import PKCS1_OAEP
 # --- Streamlit UI ---
 st.set_page_config("OmniCrypt", layout="wide",page_icon="🔐")
 st.title("🛡️ CryptX Vault Pro – Advanced Cryptography Suite")
@@ -1216,7 +1217,7 @@ elif feature == "🔎 Entropy Analyzer":
 
 
 
-from Crypto.Cipher import PKCS1_OAEP
+
 
 elif feature == "📦 PGP File Encrypt/Decrypt":
     st.header("📦 Simulated PGP (Hybrid RSA + AES Encryption)")
