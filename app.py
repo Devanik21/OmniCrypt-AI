@@ -22,6 +22,7 @@ import numpy as np
 import hashlib
 import pyotp
 import math
+import time  # ← Needed for countdown!
 import zipfile
 # --- Streamlit UI ---
 st.set_page_config("OmniCrypt", layout="wide",page_icon="🔐")
