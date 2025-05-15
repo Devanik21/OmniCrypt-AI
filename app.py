@@ -1149,7 +1149,7 @@ elif feature == "🧩 Crypto Puzzle Game":
             st.error("❌ Nope! Try again,  hacker 💔")
 
 
-elif feature == " 📈 ECC Key Exchange Visualizer":
+elif feature == "📈 ECC Key Exchange Visualizer":
     st.header("🧬 ECC Key Exchange (ECDH) Visualizer")
     curve = st.selectbox("Select Curve", ["P-256", "P-384", "P-521"])
     
