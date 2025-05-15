@@ -25,8 +25,6 @@ import math
 import time  # ← Needed for countdown!
 import zipfile
 from Crypto.Cipher import PKCS1_OAEP
-
-from secretsharing import PlaintextToHexSecretSharer
 from PIL import Image
 import hashlib
 import requests
