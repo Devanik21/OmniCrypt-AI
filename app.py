@@ -28,7 +28,7 @@ from Crypto.Cipher import PKCS1_OAEP
 from PIL import Image
 import hashlib
 import requests
-import sounddevice as sd
+
 
 import tempfile
 
