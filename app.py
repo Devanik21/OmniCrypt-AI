@@ -25,6 +25,17 @@ import math
 import time  # ← Needed for countdown!
 import zipfile
 from Crypto.Cipher import PKCS1_OAEP
+
+from secretsharing import PlaintextToHexSecretSharer
+from PIL import Image
+import hashlib
+import requests
+import sounddevice as sd
+
+import tempfile
+
+from scipy.io.wavfile import write, read
+
 # --- Streamlit UI ---
 st.set_page_config("OmniCrypt", layout="wide",page_icon="🔐")
 st.title("🛡️ CryptX Vault Pro – Advanced Cryptography Suite")
@@ -68,10 +79,17 @@ feature = st.sidebar.selectbox(
         "💾 Encrypted Notes Vault",
         "🛰️ Secure Chat Demo (ECC + AES)",
         "🔍 Randomness Tester",
-         "✍️ File Signature Generator & Verifier"
+        "✍️ File Signature Generator & Verifier",
         
+        # 🚀 Next-level advanced tools
+        "🔐 Secure Multi-Party Secret Sharing",
+        "🛡️ Post-Quantum Cryptography Simulator",
+        "🧹 Encrypted File Metadata Remover",
+        "⛓️ Blockchain Hash Logger",
+        "🎙️ Encrypted Voice Notes"
     ]
 )
+
 
 
 
@@ -1420,6 +1438,145 @@ elif feature == "✍️ File Signature Generator & Verifier":
             except Exception as e:
                 st.error(f"❌ Signature verification failed: {str(e)}")
 
+
+elif feature == "🔐 Secure Multi-Party Secret Sharing":
+    st.header("🔐 Secure Multi-Party Secret Sharing (Shamir's Secret Sharing)")
+
+    secret = st.text_input("Enter secret to split")
+    total_shares = st.number_input("Total shares to create", min_value=2, max_value=20, value=5)
+    threshold = st.number_input("Threshold for recovery", min_value=2, max_value=total_shares, value=3)
+
+    if st.button("Split Secret"):
+        if secret:
+            shares = PlaintextToHexSecretSharer.split_secret(secret, threshold, total_shares)
+            for i, share in enumerate(shares):
+                st.code(f"Share {i+1}: {share}")
+
+    st.markdown("---")
+    recovery_shares = st.text_area("Enter shares (one per line) to recover secret")
+    if st.button("Recover Secret"):
+        shares_input = recovery_shares.strip().splitlines()
+        if len(shares_input) >= threshold:
+            try:
+                recovered = PlaintextToHexSecretSharer.recover_secret(shares_input)
+                st.success(f"Recovered Secret: {recovered}")
+            except Exception as e:
+                st.error(f"Error recovering secret: {e}")
+        else:
+            st.warning("Provide enough shares to reach threshold")
+
+
+elif feature == "🛡️ Post-Quantum Cryptography Simulator":
+    st.header("🛡️ Post-Quantum Cryptography Simulator (Simplified)")
+
+    st.write("This simulates a key encapsulation mechanism (KEM) like Kyber (not secure, just demo)")
+
+    if st.button("Generate Keypair"):
+        public_key = os.urandom(32)
+        private_key = os.urandom(32)
+        st.code(public_key.hex(), "Public Key")
+        st.code(private_key.hex(), "Private Key")
+
+    if st.button("Encapsulate"):
+        ciphertext = os.urandom(64)
+        shared_secret = os.urandom(32)
+        st.code(ciphertext.hex(), "Ciphertext")
+        st.code(shared_secret.hex(), "Shared Secret")
+
+    if st.button("Decapsulate"):
+        shared_secret = os.urandom(32)
+        st.code(shared_secret.hex(), "Shared Secret")
+
+
+elif feature == "🧹 Encrypted File Metadata Remover":
+    st.header("🧹 Encrypted File Metadata Remover")
+
+    uploaded_file = st.file_uploader("Upload Image (JPEG/PNG)")
+
+    if uploaded_file:
+        try:
+            image = Image.open(uploaded_file)
+            data = list(image.getdata())
+            clean_image = Image.new(image.mode, image.size)
+            clean_image.putdata(data)
+
+            buf = io.BytesIO()
+            clean_image.save(buf, format="PNG")
+            buf.seek(0)
+
+            st.image(clean_image, caption="Image with Metadata Removed")
+            st.download_button("Download Clean Image", buf, file_name="clean_image.png")
+        except Exception as e:
+            st.error(f"Error processing image: {e}")
+
+elif feature == "⛓️ Blockchain Hash Logger":
+    st.header("⛓️ Blockchain Hash Logger (Demo)")
+
+    uploaded_file = st.file_uploader("Upload file to log hash on blockchain")
+    if uploaded_file and st.button("Log Hash"):
+        content = uploaded_file.read()
+        file_hash = hashlib.sha256(content).hexdigest()
+        st.write(f"File SHA256 Hash: {file_hash}")
+
+        # Dummy demo - pretend to post to a blockchain explorer API
+        try:
+            # Replace with real API calls for actual blockchain logging
+            response = {"status": "success", "txid": "dummy_txid_123456"}
+            if response["status"] == "success":
+                st.success(f"Hash logged! TXID: {response['txid']}")
+            else:
+                st.error("Failed to log hash")
+        except Exception as e:
+            st.error(f"API error: {e}")
+
+elif feature == "🎙️ Encrypted Voice Notes":
+    st.header("🎙️ Encrypted Voice Notes")
+
+    duration = st.slider("Record Duration (seconds)", 1, 10, 5)
+    password = st.text_input("Encryption Password", type="password")
+
+    if st.button("Record Voice"):
+        fs = 44100
+        st.info(f"Recording for {duration} seconds...")
+        recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
+        sd.wait()
+        tmp_wav = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+        write(tmp_wav.name, fs, recording)
+
+        with open(tmp_wav.name, "rb") as f:
+            audio_bytes = f.read()
+
+        if password:
+            key = SHA256.new(password.encode()).digest()
+            cipher = AES.new(key, AES.MODE_EAX)
+            ct, tag = cipher.encrypt_and_digest(audio_bytes)
+            encrypted_blob = base64.b64encode(cipher.nonce + tag + ct).decode()
+            st.text_area("Encrypted Audio (Base64)", encrypted_blob, height=150)
+            st.success("Audio encrypted!")
+        else:
+            st.error("Please enter an encryption password")
+
+    encrypted_audio = st.text_area("Paste Encrypted Audio (Base64) to Decrypt")
+    if st.button("Decrypt Audio"):
+        if encrypted_audio and password:
+            try:
+                data = base64.b64decode(encrypted_audio)
+                nonce, tag, ct = data[:16], data[16:32], data[32:]
+                key = SHA256.new(password.encode()).digest()
+                cipher = AES.new(key, AES.MODE_EAX, nonce)
+                decrypted_audio = cipher.decrypt_and_verify(ct, tag)
+
+                tmp_wav_out = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+                with open(tmp_wav_out.name, "wb") as f:
+                    f.write(decrypted_audio)
+
+                audio_bytes = open(tmp_wav_out.name, "rb").read()
+                st.audio(audio_bytes, format="audio/wav")
+                st.success("Audio decrypted and ready to play!")
+            except Exception as e:
+                st.error(f"Decryption failed: {e}")
+        else:
+            st.warning("Please provide both encrypted audio and password")
 
 
 st.markdown("---")
