@@ -4016,7 +4016,7 @@ elif feature == "🛡️ Cryptographic Protocol Analyzer":
                 """)
                 
 
-        }
+        
 
 st.markdown("---")
 st.caption("Built with ❤️ using PyCryptodome, Streamlit, and Gemini AI.")
