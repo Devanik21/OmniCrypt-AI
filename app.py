@@ -4145,7 +4145,7 @@ elif feature == "🛡️ Cryptographic Protocol Analyzer":
                 "Vulnerabilities": "Few known",
                 "Year Introduced": "2015"
             }
-
+        }
 
 st.markdown("---")
 st.caption("Built with ❤️ using PyCryptodome, Streamlit, and Gemini AI.")
