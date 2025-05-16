@@ -5204,29 +5204,30 @@ elif feature == "🛡️ Cryptographic Protocol Analyzer":
                 "Vulnerabilities": "Implementation-specific",
                 "Year Introduced": "2001"
             },
-            "Noise Protocol": {
-                "Key Exchange": "ECDHE (customizable)",
-                "Forward Secrecy": "Yes",
-                "Authentication": "Public Key",
-                "Cipher Modes": "AESGCM, ChaChaPoly",
-                "Perfect Forward Secrecy": "Yes",
-                "0-RTT": "Yes (in some patterns)",
-                "Quantum Resistance": "Low",
-                "Handshake Latency": "1-2 RTT (pattern dependent)",
-                "Performance": "High",
-                "Vulnerabilities": "Few known",
-                "Year Introduced": "2015"
-            }
+        "Noise Protocol": {
+            "Key Exchange": "ECDHE (customizable)",
+            "Forward Secrecy": "Yes",
+            "Authentication": "Public Key",
+            "Cipher Modes": "AESGCM, ChaChaPoly",
+            "Perfect Forward Secrecy": "Yes",
+            "0-RTT": "Yes (in some patterns)",
+            "Quantum Resistance": "Low",
+            "Handshake Latency": "1-2 RTT (pattern dependent)",
+            "Performance": "High",
+            "Vulnerabilities": "Few known",
+            "Year Introduced": "2015"
         }
-        if protocols_to_compare:
-            selected_data = {proto: protocol_data[proto] for proto in protocols_to_compare}
-            df = pd.DataFrame(selected_data).T
-            st.dataframe(df, use_container_width=True)
-        else:
-            st.warning("Please select at least one protocol to see the comparison ✨")
+    }
 
-        
+    if protocols_to_compare:
+        selected_data = {proto: protocol_data[proto] for proto in protocols_to_compare}
+        df = pd.DataFrame(selected_data).T
+        st.dataframe(df, use_container_width=True)
+    else:
+        st.warning("Please select at least one protocol to see the comparison ✨")
+
 
 
 st.markdown("---")
 st.caption("Built with ❤️ using PyCryptodome, Streamlit, and Gemini AI.")
+
