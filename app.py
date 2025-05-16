@@ -2607,6 +2607,471 @@ elif feature == "⚡ Side-Channel Attack Demonstrator":
         """)
 
 
+elif feature == "🌠 Quantum Key Distribution Simulator":
+    st.header("🌠 Quantum Key Distribution Simulator")
+    
+    st.markdown("""
+    ### Quantum Key Distribution
+    Quantum Key Distribution (QKD) uses quantum mechanics principles to establish a secure cryptographic key between parties.
+    The BB84 protocol leverages quantum properties like superposition and measurement to detect eavesdropping attempts.
+    """)
+    
+    qkd_tab1, qkd_tab2, qkd_tab3 = st.tabs(["BB84 Protocol Simulator", "Eavesdropper Detection", "QKD Applications"])
+    
+    with qkd_tab1:
+        st.subheader("BB84 Protocol Simulation")
+        
+        st.markdown("""
+        This simulation demonstrates the BB84 protocol for quantum key distribution:
+        1. Alice prepares qubits in random bases with random bit values
+        2. Bob measures the qubits using randomly chosen bases
+        3. They publicly compare their bases (but not results)
+        4. They keep only the bits where their bases matched
+        """)
+        
+        # Simulation settings
+        col1, col2 = st.columns(2)
+        with col1:
+            num_qubits = st.slider("Number of Qubits", min_value=8, max_value=64, value=16)
+        with col2:
+            error_rate = st.slider("Quantum Channel Error Rate (%)", min_value=0, max_value=20, value=5)
+            
+        # Add eavesdropper simulation option
+        eve_present = st.checkbox("Simulate Eavesdropper (Eve)", value=False)
+        
+        if st.button("Run QKD Simulation"):
+            # Simulation parameters
+            error_prob = error_rate / 100
+            
+            # Generate random bits and bases for Alice
+            alice_bits = [random.randint(0, 1) for _ in range(num_qubits)]
+            alice_bases = [random.randint(0, 1) for _ in range(num_qubits)]  # 0 = rectilinear, 1 = diagonal
+            
+            # Initialize Eve's measurements if present
+            if eve_present:
+                eve_bases = [random.randint(0, 1) for _ in range(num_qubits)]
+                eve_measurements = []
+                
+                # Eve intercepts and measures
+                for i in range(num_qubits):
+                    # Eve measures with random basis
+                    if eve_bases[i] == alice_bases[i]:
+                        # Correct basis, gets correct bit
+                        eve_measurements.append(alice_bits[i])
+                    else:
+                        # Wrong basis, gets random result
+                        eve_measurements.append(random.randint(0, 1))
+            
+            # Generate random measurement bases for Bob
+            bob_bases = [random.randint(0, 1) for _ in range(num_qubits)]
+            bob_measurements = []
+            
+            # Bob's measurement results
+            for i in range(num_qubits):
+                if eve_present:
+                    # If Eve intercepted, Bob receives the qubit Eve sent
+                    if bob_bases[i] == eve_bases[i]:
+                        # Bob uses same basis as Eve
+                        result = eve_measurements[i]
+                    else:
+                        # Bob uses different basis than Eve
+                        result = random.randint(0, 1)
+                else:
+                    # Direct transmission from Alice to Bob
+                    if bob_bases[i] == alice_bases[i]:
+                        # Bob used correct basis
+                        # Apply channel error probability
+                        if random.random() < error_prob:
+                            result = 1 - alice_bits[i]  # Flip the bit (error)
+                        else:
+                            result = alice_bits[i]
+                    else:
+                        # Bob used wrong basis, gets random result
+                        result = random.randint(0, 1)
+                
+                bob_measurements.append(result)
+            
+            # Determine which bits to keep (where bases match)
+            matching_bases = [i for i in range(num_qubits) if alice_bases[i] == bob_bases[i]]
+            
+            # Extract the keys
+            alice_key = [alice_bits[i] for i in matching_bases]
+            bob_key = [bob_measurements[i] for i in matching_bases]
+            
+            # Calculate key match percentage
+            if matching_bases:
+                matches = sum(1 for i in range(len(alice_key)) if alice_key[i] == bob_key[i])
+                match_percentage = (matches / len(matching_bases)) * 100
+            else:
+                match_percentage = 0
+            
+            # Sample subset of key for error estimation
+            sample_size = min(len(matching_bases) // 2, 1)
+            if sample_size > 0:
+                sample_indices = random.sample(range(len(alice_key)), sample_size)
+                alice_sample = [alice_key[i] for i in sample_indices]
+                bob_sample = [bob_key[i] for i in sample_indices]
+                
+                # Calculate error rate in sample
+                sample_errors = sum(1 for i in range(sample_size) if alice_sample[i] != bob_sample[i])
+                sample_error_rate = (sample_errors / sample_size) * 100
+                
+                # Remove sampled bits from final key
+                final_alice_key = [alice_key[i] for i in range(len(alice_key)) if i not in sample_indices]
+                final_bob_key = [bob_key[i] for i in range(len(bob_key)) if i not in sample_indices]
+            else:
+                sample_error_rate = 0
+                final_alice_key = alice_key
+                final_bob_key = bob_key
+            
+            # Display visualization of the protocol
+            st.subheader("BB84 Protocol Visualization")
+            
+            # Prepare data for visualization
+            data = []
+            for i in range(num_qubits):
+                qubit_data = {
+                    "Qubit": i + 1,
+                    "Alice's Bit": alice_bits[i],
+                    "Alice's Basis": "Rectilinear (┼)" if alice_bases[i] == 0 else "Diagonal (╳)",
+                }
+                
+                if eve_present:
+                    qubit_data.update({
+                        "Eve's Basis": "Rectilinear (┼)" if eve_bases[i] == 0 else "Diagonal (╳)",
+                        "Eve's Measurement": eve_measurements[i]
+                    })
+                
+                qubit_data.update({
+                    "Bob's Basis": "Rectilinear (┼)" if bob_bases[i] == 0 else "Diagonal (╳)",
+                    "Bob's Measurement": bob_measurements[i],
+                    "Bases Match": "✓" if alice_bases[i] == bob_bases[i] else "✗",
+                    "Key Bit": alice_bits[i] if i in matching_bases else "-"
+                })
+                
+                data.append(qubit_data)
+            
+            # Convert to DataFrame for display
+            qkd_df = pd.DataFrame(data)
+            st.dataframe(qkd_df)
+            
+            # Results
+            st.subheader("Key Exchange Results")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Matched Bases", f"{len(matching_bases)}/{num_qubits}", 
+                         f"{(len(matching_bases)/num_qubits)*100:.1f}%")
+            with col2:
+                st.metric("Key Length", len(final_alice_key))
+            with col3:
+                error_delta = f"{match_percentage - 100:.1f}%" if match_percentage < 100 else "0%"
+                st.metric("Key Match Rate", f"{match_percentage:.1f}%", error_delta)
+            
+            # Display final keys
+            col1, col2 = st.columns(2)
+            with col1:
+                st.write("Alice's Final Key:", ''.join(map(str, final_alice_key)))
+            with col2:
+                st.write("Bob's Final Key:", ''.join(map(str, final_bob_key)))
+            
+            # Eavesdropping detection analysis
+            if eve_present:
+                st.subheader("Eavesdropping Detection")
+                
+                # Calculate theoretical error rate due to Eve
+                theoretical_eve_error = 25.0  # 25% error rate with intercept-resend attack
+                
+                st.error(f"""
+                **Eavesdropper Detected!**
+                
+                The quantum bit error rate is {100-match_percentage:.1f}%, which is higher than expected from the channel error rate ({error_rate}%).
+                
+                When Eve measures qubits and resends them, she introduces approximately 25% errors when Alice and Bob's bases match,
+                because Eve chooses the wrong basis about 50% of the time, and each wrong basis causes a 50% chance of error.
+                """)
+            else:
+                if 100-match_percentage > error_rate * 1.5:  # If error rate is significantly higher than expected
+                    st.warning(f"""
+                    **Unusual Error Rate Detected**
+                    
+                    The error rate ({100-match_percentage:.1f}%) is higher than expected from the channel error rate ({error_rate}%).
+                    This might indicate noise in the quantum channel or a possible eavesdropper.
+                    """)
+                else:
+                    st.success(f"""
+                    **Secure Key Established**
+                    
+                    The error rate ({100-match_percentage:.1f}%) is consistent with the expected channel error rate ({error_rate}%).
+                    No evidence of eavesdropping detected.
+                    """)
+    
+    with qkd_tab2:
+        st.subheader("Eavesdropper Detection Analysis")
+        
+        st.markdown("""
+        ### How QKD Detects Eavesdroppers
+        
+        Quantum Key Distribution protocols can detect eavesdroppers due to a fundamental principle of quantum mechanics:
+        **measurement disturbs the quantum state** (the observer effect).
+        
+        In the BB84 protocol:
+        
+        1. If Eve intercepts and measures a qubit, she must choose a measurement basis (rectilinear or diagonal)
+        2. When Eve's basis doesn't match Alice's (happens ~50% of the time):
+            - Eve gets a random result
+            - The qubit collapses to a state aligned with Eve's basis
+        3. When Bob measures with the same basis as Alice:
+            - Without Eve: Bob gets the correct bit (except for natural channel errors)
+            - With Eve: Bob gets a random result ~25% of the time due to Eve's interference
+        
+        This introduces a detectable error rate of about 25% in an otherwise perfect channel.
+        """)
+
+        # Interactive Eve attack simulation
+        st.write("### Interactive Eavesdropping Simulation")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            qubits_sent = st.slider("Qubits Exchanged", min_value=1000, max_value=10000, value=2000, step=1000)
+        with col2:
+            base_error = st.slider("Baseline Channel Error (%)", min_value=0, max_value=15, value=3)
+        
+        intercept_rate = st.slider("Eve's Intercept Rate (%)", min_value=0, max_value=100, value=0)
+        
+        if st.button("Run Eavesdropping Analysis"):
+            # Calculate QBER (Quantum Bit Error Rate)
+            base_qber = base_error / 100
+            
+            # Eve's intercept-resend attack adds errors
+            # Each intercepted qubit has 25% chance of causing error when bases match
+            eve_error_contribution = (intercept_rate / 100) * 0.25
+            
+            # Total QBER is a combination of base error and Eve's contribution
+            # We don't just add them because some of Eve's errors might overlap with base errors
+            total_qber = base_qber + eve_error_contribution * (1 - base_qber)
+            
+            # Expected errors in matched bases
+            matched_bases = qubits_sent // 2  # On average, 50% of bases will match
+            expected_errors = int(matched_bases * total_qber)
+            
+            # Create visualization
+            fig, ax = plt.subplots(figsize=(10, 6))
+            
+            # Plot error rates
+            x = np.arange(0, 101, 1)  # Intercept rates from 0 to 100%
+            y = [(base_qber + (i/100) * 0.25 * (1 - base_qber)) * 100 for i in x]
+            
+            ax.plot(x, y, 'b-', linewidth=2, label='Total Error Rate')
+            ax.axhline(y=base_error, color='g', linestyle='-', label=f'Base Error Rate ({base_error}%)')
+            ax.axhline(y=10, color='r', linestyle='--', label='Security Threshold (10%)')
+            
+            # Mark the current intercept rate
+            ax.plot(intercept_rate, total_qber * 100, 'ro', markersize=10)
+            ax.annotate(f'{total_qber*100:.1f}%', 
+                       xy=(intercept_rate, total_qber * 100),
+                       xytext=(5, 10), textcoords='offset points')
+            
+            ax.set_xlabel('Eve\'s Intercept Rate (%)')
+            ax.set_ylabel('Quantum Bit Error Rate (%)')
+            ax.set_title('Impact of Eavesdropping on Error Rate')
+            ax.grid(True, alpha=0.3)
+            ax.legend()
+            
+            st.pyplot(fig)
+            
+            # Analysis
+            st.subheader("Security Analysis")
+            
+            if intercept_rate == 0:
+                st.success(f"""
+                **No Eavesdropper Detected**
+                
+                The quantum bit error rate is {total_qber*100:.1f}%, which matches the expected channel error rate.
+                The key exchange appears secure.
+                """)
+            elif total_qber * 100 < 10:
+                st.warning(f"""
+                **Potential Eavesdropping Detected**
+                
+                With Eve intercepting {intercept_rate}% of qubits, the error rate rises to {total_qber*100:.1f}%.
+                This is above the baseline error rate but below the security threshold.
+                
+                - Expected errors in matched bases: {expected_errors} out of {matched_bases}
+                - Key can still be secured using privacy amplification
+                """)
+            else:
+                st.error(f"""
+                **Severe Eavesdropping Detected**
+                
+                The quantum bit error rate of {total_qber*100:.1f}% exceeds the security threshold of 10%.
+                The key exchange should be aborted and restarted through a different channel.
+                
+                Eve has likely intercepted a significant portion of the transmission.
+                """)
+    
+    with qkd_tab3:
+        st.subheader("QKD Applications and Limitations")
+        
+        st.markdown("""
+        ### Practical Applications of QKD
+        
+        Quantum Key Distribution is being deployed in various scenarios:
+        
+        1. **Financial Networks**: Securing transactions between banks and financial institutions
+        2. **Government Communications**: Protecting classified information and diplomatic channels
+        3. **Critical Infrastructure**: Securing power grids, water systems, and other essential services
+        4. **Healthcare Networks**: Protecting sensitive patient data in compliance with regulations
+        5. **Satellite QKD**: Enabling secure global communications via space-based quantum links
+        
+        ### Current Limitations
+        
+        Despite its theoretical security, QKD faces practical challenges:
+        
+        1. **Distance Limitations**: Quantum signals degrade over distance (typically limited to ~100km in fiber)
+        2. **Hardware Requirements**: Specialized equipment needed (single-photon detectors, quantum random number generators)
+        3. **Side-Channel Attacks**: Implementation vulnerabilities in physical devices
+        4. **Integration Challenges**: Connecting with existing network infrastructure
+        5. **Cost and Complexity**: High deployment and maintenance expenses
+        
+        ### Beyond BB84
+        
+        Advanced QKD protocols include:
+        
+        1. **E91 Protocol**: Uses quantum entanglement for key distribution
+        2. **BBM92**: Modified BB84 using entangled photon pairs
+        3. **Continuous-Variable QKD**: Uses quadrature measurements of coherent states
+        4. **Measurement-Device-Independent QKD**: Eliminates detector vulnerabilities
+        5. **Twin-Field QKD**: Extends the range limit significantly
+        """)
+        
+        # Interactive QKD network simulator
+        st.write("### QKD Network Range Simulator")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            protocol = st.selectbox("QKD Protocol", [
+                "BB84 (Standard)", 
+                "Decoy State BB84", 
+                "MDI-QKD",
+                "Twin-Field QKD"
+            ])
+        with col2:
+            medium = st.selectbox("Transmission Medium", [
+                "Standard Telecom Fiber", 
+                "Ultra-Low Loss Fiber",
+                "Free Space (Clear Weather)",
+                "Free Space (Satellite Link)"
+            ])
+        
+        if st.button("Calculate Maximum Range"):
+            # Approximate ranges based on current technology
+            ranges = {
+                "BB84 (Standard)": {
+                    "Standard Telecom Fiber": 80,
+                    "Ultra-Low Loss Fiber": 120,
+                    "Free Space (Clear Weather)": 100,
+                    "Free Space (Satellite Link)": 1200
+                },
+                "Decoy State BB84": {
+                    "Standard Telecom Fiber": 150,
+                    "Ultra-Low Loss Fiber": 200,
+                    "Free Space (Clear Weather)": 180,
+                    "Free Space (Satellite Link)": 1500
+                },
+                "MDI-QKD": {
+                    "Standard Telecom Fiber": 200,
+                    "Ultra-Low Loss Fiber": 300,
+                    "Free Space (Clear Weather)": 170,
+                    "Free Space (Satellite Link)": 1000
+                },
+                "Twin-Field QKD": {
+                    "Standard Telecom Fiber": 500,
+                    "Ultra-Low Loss Fiber": 800,
+                    "Free Space (Clear Weather)": 300,
+                    "Free Space (Satellite Link)": 2000
+                }
+            }
+            
+            # Get the range for the selected protocol and medium
+            max_range = ranges[protocol][medium]
+            
+            # Key rates (approximations)
+            key_rates = {
+                "BB84 (Standard)": 10,
+                "Decoy State BB84": 50,
+                "MDI-QKD": 5,
+                "Twin-Field QKD": 2
+            }
+            
+            base_key_rate = key_rates[protocol]
+            
+            # Calculate estimated key rate at half the max distance
+            half_distance = max_range / 2
+            estimated_key_rate = base_key_rate * math.exp(-0.2 * half_distance / 100)
+            
+            # Display results
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Maximum Range", f"{max_range} km")
+            with col2:
+                st.metric("Est. Key Rate at Half Range", f"{estimated_key_rate:.2f} kbps")
+            
+            # Create distance vs key rate graph
+            fig, ax = plt.subplots(figsize=(10, 6))
+            
+            # Plot key rate vs distance
+            distances = np.arange(0, max_range * 1.1, max_range / 50)
+            # Key rate typically follows exponential decay with distance
+            rates = [base_key_rate * math.exp(-0.2 * d / 100) for d in distances]
+            
+            ax.semilogy(distances, rates, 'b-', linewidth=2)
+            ax.set_xlabel('Distance (km)')
+            ax.set_ylabel('Secure Key Rate (kbps)')
+            ax.set_title(f'Key Rate vs Distance for {protocol} over {medium}')
+            ax.grid(True, which="both", linestyle='--', alpha=0.7)
+            
+            # Mark the half distance point
+            ax.plot(half_distance, estimated_key_rate, 'ro')
+            ax.annotate(f'{estimated_key_rate:.2f} kbps', 
+                       xy=(half_distance, estimated_key_rate),
+                       xytext=(10, 10), textcoords='offset points')
+            
+            st.pyplot(fig)
+            
+            # Practical notes based on selection
+            st.subheader("Implementation Notes")
+            
+            if protocol == "BB84 (Standard)" and medium == "Standard Telecom Fiber":
+                st.info("""
+                **Standard BB84 in Telecom Fiber**
+                
+                This is the most common and well-established QKD implementation, suitable for metropolitan networks.
+                Typical use cases include secure links between data centers within the same city.
+                
+                Key challenges include photon loss in fiber and detector dark counts limiting the range.
+                """)
+            elif protocol == "Twin-Field QKD" and "Fiber" in medium:
+                st.success("""
+                **Twin-Field QKD in Fiber**
+                
+                This cutting-edge protocol can achieve significantly longer distances without quantum repeaters.
+                The technology uses interference between phase-coherent pulses sent from Alice and Bob to a middle node.
+                
+                Recent experiments have demonstrated secure key exchange over 500+ km of fiber.
+                """)
+            elif "Satellite" in medium:
+                st.warning("""
+                **Satellite-Based QKD**
+                
+                Satellite QKD can achieve global distances but faces unique challenges:
+                - Atmospheric turbulence affecting quantum states
+                - Limited satellite visibility windows (typically 5-10 minutes per pass)
+                - Lower key rates compared to fiber implementations
+                
+                China's Micius satellite has demonstrated successful QKD over intercontinental distances.
+                """)
+
 
 
 st.markdown("---")
