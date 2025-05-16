@@ -4044,7 +4044,107 @@ elif feature == "🛡️ Cryptographic Protocol Analyzer":
             "TLS 1.2": {
                 "Key Exchange": "RSA or DHE/ECDHE",
                 "Forward Secrecy": "Optional (with DHE/ECDHE)",
-                "Authent
+                "Authentication": "Certificate-based",
+                "Cipher Modes": "CBC, GCM",
+                "Perfect Forward Secrecy": "Optional",
+                "0-RTT": "No",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "2-RTT",
+                "Performance": "Moderate",
+                "Vulnerabilities": "BEAST, POODLE, CRIME, BREACH, Heartbleed (impl.)",
+                "Year Introduced": "2008"
+            },
+            "TLS 1.3": {
+                "Key Exchange": "DHE/ECDHE only",
+                "Forward Secrecy": "Mandatory",
+                "Authentication": "Certificate-based",
+                "Cipher Modes": "AEAD only (GCM, ChaCha20-Poly1305)",
+                "Perfect Forward Secrecy": "Yes",
+                "0-RTT": "Optional",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "1-RTT",
+                "Performance": "High",
+                "Vulnerabilities": "Limited (0-RTT replay if enabled)",
+                "Year Introduced": "2018"
+            },
+            "SSH": {
+                "Key Exchange": "DHE/ECDHE",
+                "Forward Secrecy": "Yes",
+                "Authentication": "Public Key or Password",
+                "Cipher Modes": "CBC, CTR, GCM",
+                "Perfect Forward Secrecy": "Yes",
+                "0-RTT": "No",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "Multiple round trips",
+                "Performance": "Moderate",
+                "Vulnerabilities": "Implementation-specific",
+                "Year Introduced": "1995 (SSHv2: 2006)"
+            },
+            "Signal Protocol": {
+                "Key Exchange": "Triple ECDHE (X3DH)",
+                "Forward Secrecy": "Yes",
+                "Authentication": "Public Key",
+                "Cipher Modes": "AES-CBC, AES-GCM",
+                "Perfect Forward Secrecy": "Yes",
+                "0-RTT": "Yes (with prekeys)",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "Asynchronous",
+                "Performance": "High",
+                "Vulnerabilities": "Few known",
+                "Year Introduced": "2013"
+            },
+            "IPsec": {
+                "Key Exchange": "IKE (Internet Key Exchange)",
+                "Forward Secrecy": "Optional",
+                "Authentication": "Pre-shared keys, Certificates, EAP",
+                "Cipher Modes": "CBC, CTR, GCM",
+                "Perfect Forward Secrecy": "Optional",
+                "0-RTT": "No",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "Multiple round trips",
+                "Performance": "Moderate",
+                "Vulnerabilities": "Complex config, implementation issues",
+                "Year Introduced": "1995"
+            },
+            "WireGuard": {
+                "Key Exchange": "ECDHE (Curve25519)",
+                "Forward Secrecy": "Yes",
+                "Authentication": "Public Key",
+                "Cipher Modes": "ChaCha20-Poly1305",
+                "Perfect Forward Secrecy": "Yes",
+                "0-RTT": "Yes",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "1-RTT",
+                "Performance": "Very High",
+                "Vulnerabilities": "Few known",
+                "Year Introduced": "2016"
+            },
+            "OpenVPN": {
+                "Key Exchange": "TLS-based (RSA or DHE/ECDHE)",
+                "Forward Secrecy": "Optional",
+                "Authentication": "Certificates, Pre-shared keys",
+                "Cipher Modes": "CBC, GCM",
+                "Perfect Forward Secrecy": "Optional",
+                "0-RTT": "No",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "Multiple round trips",
+                "Performance": "Moderate",
+                "Vulnerabilities": "Implementation-specific",
+                "Year Introduced": "2001"
+            },
+            "Noise Protocol": {
+                "Key Exchange": "ECDHE (customizable)",
+                "Forward Secrecy": "Yes",
+                "Authentication": "Public Key",
+                "Cipher Modes": "AESGCM, ChaChaPoly",
+                "Perfect Forward Secrecy": "Yes",
+                "0-RTT": "Yes (in some patterns)",
+                "Quantum Resistance": "Low",
+                "Handshake Latency": "1-2 RTT (pattern dependent)",
+                "Performance": "High",
+                "Vulnerabilities": "Few known",
+                "Year Introduced": "2015"
+            }
 
 
 st.markdown("---")
