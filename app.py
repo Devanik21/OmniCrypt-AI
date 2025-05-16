@@ -3074,5 +3074,978 @@ elif feature == "🌠 Quantum Key Distribution Simulator":
 
 
 
+elif feature == "🛡️ Cryptographic Protocol Analyzer":
+    st.header("🛡️ Cryptographic Protocol Analyzer")
+    
+    st.markdown("""
+    ### Cryptographic Protocol Analysis
+    This tool allows you to analyze and compare various cryptographic protocols, understand their security properties,
+    and visualize vulnerabilities in different attack scenarios.
+    """)
+    
+    crypto_tab1, crypto_tab2, crypto_tab3 = st.tabs(["Protocol Security Analysis", "Man-in-the-Middle Simulation", "Protocol Comparison"])
+    
+    with crypto_tab1:
+        st.subheader("Protocol Security Properties")
+        
+        st.markdown("""
+        This analyzer helps you understand the security properties of common cryptographic protocols.
+        Select a protocol to analyze its security features, known vulnerabilities, and typical use cases.
+        """)
+        
+        # Protocol selection
+        protocol = st.selectbox(
+            "Select Protocol to Analyze",
+            [
+                "TLS 1.3", 
+                "Signal Protocol", 
+                "Diffie-Hellman Key Exchange",
+                "RSA Key Exchange", 
+                "SSH",
+                "Kerberos",
+                "OAuth 2.0"
+            ]
+        )
+        
+        # Protocol properties
+        protocol_properties = {
+            "TLS 1.3": {
+                "confidentiality": 5,
+                "integrity": 5,
+                "authentication": 5,
+                "forward_secrecy": 5,
+                "quantum_resistance": 2,
+                "implementation_complexity": 4,
+                "known_vulnerabilities": [
+                    "Side-channel timing attacks", 
+                    "Implementation errors", 
+                    "Certificate validation issues"
+                ],
+                "description": """
+                Transport Layer Security (TLS) 1.3 is the latest version of the TLS protocol, providing secure 
+                communication over a computer network. TLS 1.3 removed support for many insecure or obsolete features
+                present in TLS 1.2, including SHA-1, RC4, DES, and 3DES.
+                
+                **Key Features:**
+                - Simplified handshake process (reduced to 1-RTT)
+                - Improved privacy with encrypted handshakes
+                - Removal of outdated cryptographic algorithms
+                - Support for 0-RTT resumption (with security trade-offs)
+                - Mandatory perfect forward secrecy
+                """
+            },
+            "Signal Protocol": {
+                "confidentiality": 5,
+                "integrity": 5,
+                "authentication": 5,
+                "forward_secrecy": 5,
+                "quantum_resistance": 2,
+                "implementation_complexity": 4,
+                "known_vulnerabilities": [
+                    "Side-channel attacks", 
+                    "Implementation errors",
+                    "Key verification challenges"
+                ],
+                "description": """
+                The Signal Protocol (formerly TextSecure Protocol) is a non-federated cryptographic protocol that
+                provides end-to-end encryption for instant messaging. It uses a combination of the Double Ratchet
+                Algorithm, prekeys, and a triple Elliptic-curve Diffie-Hellman (3-DH) handshake.
+                
+                **Key Features:**
+                - Triple Diffie-Hellman (3DH) key agreement
+                - Double Ratchet Algorithm for forward secrecy
+                - Break-in recovery (future secrecy)
+                - Asynchronous messaging with prekeys
+                - Deniability properties
+                """
+            },
+            "Diffie-Hellman Key Exchange": {
+                "confidentiality": 4,
+                "integrity": 3,
+                "authentication": 1,
+                "forward_secrecy": 5,
+                "quantum_resistance": 1,
+                "implementation_complexity": 2,
+                "known_vulnerabilities": [
+                    "Man-in-the-middle attack", 
+                    "Small subgroup attacks", 
+                    "Logjam attack (weak parameters)",
+                    "Quantum computer vulnerability"
+                ],
+                "description": """
+                The Diffie-Hellman (DH) key exchange protocol allows two parties to establish a shared secret over
+                an insecure channel. The original protocol doesn't provide authentication, making it vulnerable to 
+                man-in-the-middle attacks when used alone.
+                
+                **Key Features:**
+                - Allows secure key exchange over insecure channels
+                - Basis for many modern key exchange protocols
+                - Provides forward secrecy
+                - Simple mathematical foundation based on discrete logarithm problem
+                """
+            },
+            "RSA Key Exchange": {
+                "confidentiality": 4,
+                "integrity": 4,
+                "authentication": 4,
+                "forward_secrecy": 1,
+                "quantum_resistance": 1,
+                "implementation_complexity": 3,
+                "known_vulnerabilities": [
+                    "Quantum computer vulnerability", 
+                    "Padding oracle attacks", 
+                    "Timing attacks",
+                    "Bleichenbacher's attack",
+                    "No forward secrecy"
+                ],
+                "description": """
+                RSA (Rivest-Shamir-Adleman) is one of the first public-key cryptosystems widely used for secure 
+                data transmission. It's based on the practical difficulty of factoring the product of two large 
+                prime numbers.
+                
+                **Key Features:**
+                - Public key encryption and digital signatures
+                - Widely deployed in various security applications
+                - Simple key exchange mechanism
+                - Can be used for both encryption and signatures
+                - Vulnerable to quantum computing attacks
+                """
+            },
+            "SSH": {
+                "confidentiality": 5,
+                "integrity": 5,
+                "authentication": 5,
+                "forward_secrecy": 4,
+                "quantum_resistance": 2,
+                "implementation_complexity": 3,
+                "known_vulnerabilities": [
+                    "Implementation vulnerabilities", 
+                    "Key management issues", 
+                    "Configuration errors",
+                    "Side-channel attacks"
+                ],
+                "description": """
+                Secure Shell (SSH) is a cryptographic network protocol for operating network services securely over
+                an unsecured network. SSH provides a secure channel over an unsecured network by using client-server
+                architecture, connecting an SSH client application with an SSH server.
+                
+                **Key Features:**
+                - Strong encryption and authentication
+                - Public key and password authentication options
+                - Port forwarding capabilities
+                - Secure file transfer protocol (SFTP) support
+                - Command-line and programmatic access
+                """
+            },
+            "Kerberos": {
+                "confidentiality": 4,
+                "integrity": 4,
+                "authentication": 5,
+                "forward_secrecy": 2,
+                "quantum_resistance": 2,
+                "implementation_complexity": 5,
+                "known_vulnerabilities": [
+                    "Pass-the-ticket attacks", 
+                    "Golden ticket attacks", 
+                    "Kerberoasting",
+                    "Clock synchronization issues",
+                    "Password-based vulnerabilities"
+                ],
+                "description": """
+                Kerberos is a computer network authentication protocol that works on the basis of tickets to allow
+                nodes communicating over a non-secure network to prove their identity to one another in a secure manner.
+                
+                **Key Features:**
+                - Mutual authentication (client and server verify each other)
+                - Ticket-based authentication system
+                - Single sign-on capabilities
+                - Time-synchronized tickets with limited lifetime
+                - Centralized authentication server (KDC)
+                """
+            },
+            "OAuth 2.0": {
+                "confidentiality": 3,
+                "integrity": 3,
+                "authentication": 4,
+                "forward_secrecy": 1,
+                "quantum_resistance": 3,
+                "implementation_complexity": 4,
+                "known_vulnerabilities": [
+                    "CSRF attacks", 
+                    "Token leakage", 
+                    "Phishing vulnerabilities",
+                    "Implementation errors",
+                    "Authorization code interception"
+                ],
+                "description": """
+                OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited
+                access to an HTTP service. It works by delegating user authentication to the service that hosts
+                the user account and authorizing third-party applications to access that user account.
+                
+                **Key Features:**
+                - Token-based authorization
+                - Different grant types for various use cases
+                - Separation of authentication and authorization
+                - Limited scope access control
+                - Widely adopted for API authorization
+                """
+            }
+        }
+        
+        # Display protocol information
+        if protocol in protocol_properties:
+            props = protocol_properties[protocol]
+            
+            # Protocol description
+            st.markdown(props["description"])
+            
+            # Security properties radar chart
+            st.subheader("Security Properties")
+            
+            # Prepare data for radar chart
+            categories = ['Confidentiality', 'Integrity', 'Authentication', 
+                         'Forward Secrecy', 'Quantum Resistance', 'Implementation\nSimplicity']
+            
+            values = [
+                props["confidentiality"],
+                props["integrity"],
+                props["authentication"],
+                props["forward_secrecy"],
+                props["quantum_resistance"],
+                6 - props["implementation_complexity"]  # Invert for simplicity
+            ]
+            
+            # Create radar chart
+            fig = plt.figure(figsize=(10, 6))
+            ax = fig.add_subplot(111, polar=True)
+            
+            # Set the angles for each property
+            angles = np.linspace(0, 2*np.pi, len(categories), endpoint=False).tolist()
+            values.append(values[0])  # Close the loop
+            angles.append(angles[0])  # Close the loop
+            
+            # Plot the radar chart
+            ax.plot(angles, values, 'o-', linewidth=2)
+            ax.fill(angles, values, alpha=0.25)
+            
+            # Set the labels
+            ax.set_thetagrids(np.degrees(angles[:-1]), categories)
+            ax.set_ylim(0, 5)
+            ax.grid(True)
+            
+            # Add chart title
+            plt.title(f'Security Properties of {protocol}', size=15, y=1.1)
+            
+            st.pyplot(fig)
+            
+            # Vulnerabilities section
+            st.subheader("Known Vulnerabilities")
+            for vuln in props["known_vulnerabilities"]:
+                st.markdown(f"- {vuln}")
+            
+            if st.checkbox("Show Mitigation Strategies"):
+                st.subheader("Mitigation Strategies")
+                
+                mitigations = {
+                    "TLS 1.3": [
+                        "Use up-to-date TLS libraries and keep them updated",
+                        "Follow implementation best practices",
+                        "Use proper certificate validation",
+                        "Enable certificate transparency"
+                    ],
+                    "Signal Protocol": [
+                        "Use secure key verification methods",
+                        "Keep implementations updated",
+                        "Validate device identity before communication",
+                        "Follow implementation guidelines"
+                    ],
+                    "Diffie-Hellman Key Exchange": [
+                        "Always combine with authentication mechanism",
+                        "Use strong, vetted parameters",
+                        "Use elliptic curve variant (ECDHE) when possible",
+                        "Validate all parameters"
+                    ],
+                    "RSA Key Exchange": [
+                        "Use sufficiently large key sizes (minimum 2048 bits)",
+                        "Use proper padding (PKCS#1 v2.1 / OAEP)",
+                        "Implement countermeasures against timing attacks",
+                        "Consider migrating to protocols with forward secrecy"
+                    ],
+                    "SSH": [
+                        "Use key-based authentication instead of passwords",
+                        "Configure server with secure ciphers and algorithms",
+                        "Keep SSH implementation updated",
+                        "Use proper key management procedures"
+                    ],
+                    "Kerberos": [
+                        "Use strong password policies",
+                        "Implement time synchronization",
+                        "Monitor for suspicious ticket granting activities",
+                        "Secure the Key Distribution Center (KDC)"
+                    ],
+                    "OAuth 2.0": [
+                        "Use state parameters to prevent CSRF",
+                        "Implement PKCE for mobile applications",
+                        "Validate redirect URIs",
+                        "Use short-lived access tokens",
+                        "Use secure transport (HTTPS) throughout"
+                    ]
+                }
+                
+                for mitigation in mitigations[protocol]:
+                    st.markdown(f"- {mitigation}")
+        
+        # Show example attack scenario
+        if st.checkbox("Show Example Attack Scenario"):
+            st.subheader(f"Example Attack Scenario for {protocol}")
+            
+            attack_scenarios = {
+                "TLS 1.3": {
+                    "title": "Downgrade Attack Attempt",
+                    "description": """
+                    In this scenario, an attacker attempts to force a TLS 1.3 connection to downgrade to an older,
+                    vulnerable version of TLS or SSL.
+                    
+                    **Attack Flow:**
+                    1. Client initiates TLS 1.3 connection to server
+                    2. Attacker intercepts ClientHello message
+                    3. Attacker modifies ClientHello to indicate only TLS 1.2 or older is supported
+                    4. Attacker forwards modified message to server
+                    
+                    **TLS 1.3 Protection:**
+                    TLS 1.3 includes specific protections against downgrade attacks:
+                    - The server includes a value in the server nonce that indicates downgrade protection
+                    - Final handshake verification would detect the manipulation
+                    - Attack fails as the client detects the downgrade attempt
+                    """,
+                    "success_rate": 5  # Percentage chance of success (out of 100)
+                },
+                "Signal Protocol": {
+                    "title": "Identity Key Verification Bypass",
+                    "description": """
+                    In this scenario, an attacker attempts to execute a man-in-the-middle attack by replacing 
+                    the legitimate public key with their own.
+                    
+                    **Attack Flow:**
+                    1. Attacker intercepts initial key exchange
+                    2. Attacker substitutes their own public key
+                    3. Attacker attempts to relay messages between parties
+                    
+                    **Signal Protocol Protection:**
+                    Signal provides protection through:
+                    - Safety numbers that users can verify out-of-band
+                    - Notifications when a contact's key changes
+                    - The attack fails if users verify keys through secondary channels
+                    """,
+                    "success_rate": 15  # Higher success rate because it depends on user verification
+                },
+                "Diffie-Hellman Key Exchange": {
+                    "title": "Man-in-the-Middle Attack",
+                    "description": """
+                    In this scenario, an attacker positions themselves between the communicating parties to
+                    intercept and relay messages, establishing separate keys with each legitimate party.
+                    
+                    **Attack Flow:**
+                    1. Alice sends her public value g^a mod p to Bob
+                    2. Mallory intercepts this and sends her own public value g^m mod p to Bob
+                    3. Bob responds with his public value g^b mod p
+                    4. Mallory intercepts this and sends her own public value g^n mod p to Alice
+                    5. Alice and Bob now each share a key with Mallory, not with each other
+                    
+                    **Vulnerability:**
+                    Basic Diffie-Hellman has no authentication mechanism, making this attack highly successful.
+                    To mitigate, DH must be combined with an authentication mechanism.
+                    """,
+                    "success_rate": 95  # Very high success rate for unauthenticated DH
+                },
+                "RSA Key Exchange": {
+                    "title": "Bleichenbacher's Oracle Attack",
+                    "description": """
+                    This attack exploits information leaked by SSL/TLS servers that use RSA encryption with PKCS#1 v1.5 padding.
+                    
+                    **Attack Flow:**
+                    1. Attacker captures an RSA-encrypted message (premaster secret)
+                    2. Attacker sends carefully crafted modifications of the message to the server
+                    3. Server responses reveal information about the padding
+                    4. With enough queries, the attacker can decrypt the original message
+                    
+                    **Vulnerability:**
+                    The success depends on whether the server leaks information about the PKCS#1 padding validity.
+                    Modern implementations include countermeasures, but implementation errors can reintroduce the vulnerability.
+                    """,
+                    "success_rate": 30  # Moderate success rate due to widespread mitigations
+                },
+                "SSH": {
+                    "title": "Password Brute Force Attack",
+                    "description": """
+                    In this scenario, an attacker attempts to gain access by trying multiple password combinations.
+                    
+                    **Attack Flow:**
+                    1. Attacker identifies SSH server and port
+                    2. Attacker uses automated tools to try common usernames and passwords
+                    3. If successful, attacker gains shell access to the target system
+                    
+                    **Vulnerability:**
+                    The success depends on password strength and whether the server allows password authentication.
+                    Systems configured to use only key-based authentication are protected against this attack.
+                    """,
+                    "success_rate": 25  # Success depends heavily on configuration
+                },
+                "Kerberos": {
+                    "title": "Pass-the-Ticket Attack",
+                    "description": """
+                    In this attack, an adversary extracts and reuses Kerberos tickets from one system to access another system.
+                    
+                    **Attack Flow:**
+                    1. Attacker compromises a system where a user is authenticated
+                    2. Attacker extracts Kerberos tickets from memory
+                    3. Attacker reuses these tickets to access other services as the victim
+                    
+                    **Vulnerability:**
+                    Once an attacker has access to a machine with active tickets, they can reuse those tickets
+                    until they expire. This attack is particularly effective in active directory environments.
+                    """,
+                    "success_rate": 70  # High success rate if initial access is gained
+                },
+                "OAuth 2.0": {
+                    "title": "Authorization Code Interception",
+                    "description": """
+                    In this attack, an attacker intercepts the authorization code before it's exchanged for an access token.
+                    
+                    **Attack Flow:**
+                    1. User initiates OAuth flow with legitimate application
+                    2. User authenticates and authorizes the application
+                    3. Authorization server redirects with code
+                    4. Attacker intercepts the authorization code (via network sniffing, malicious app, etc.)
+                    5. Attacker uses the code to obtain an access token
+                    
+                    **Vulnerability:**
+                    The attack success depends on the implementation. Using PKCE (Proof Key for Code Exchange)
+                    extension can prevent this attack for public clients.
+                    """,
+                    "success_rate": 45  # Moderate success rate depending on implementation
+                }
+            }
+            
+            scenario = attack_scenarios[protocol]
+            
+            # Display attack scenario
+            st.markdown(f"### {scenario['title']}")
+            st.markdown(scenario["description"])
+            
+            # Attack success visualization
+            success_rate = scenario["success_rate"]
+            
+            col1, col2 = st.columns([1, 3])
+            with col1:
+                st.metric("Attack Success Rate", f"{success_rate}%")
+                
+            with col2:
+                # Simple visualization of attack success probability
+                fig, ax = plt.subplots(figsize=(8, 1))
+                ax.barh([""], [success_rate], color='red', alpha=0.7)
+                ax.barh([""], [100-success_rate], left=[success_rate], color='green', alpha=0.7)
+                
+                # Add labels
+                if success_rate < 50:
+                    ax.text(success_rate + 2, 0, f"Protected ({100-success_rate}%)", va='center')
+                    ax.text(success_rate/2, 0, f"Vulnerable ({success_rate}%)", va='center', ha='center', color='white')
+                else:
+                    ax.text(success_rate/2, 0, f"Vulnerable ({success_rate}%)", va='center', ha='center', color='white')
+                    ax.text(success_rate + (100-success_rate)/2, 0, f"Protected ({100-success_rate}%)", va='center', ha='center')
+                
+                ax.set_xlim(0, 100)
+                ax.set_xticks([])
+                ax.set_yticks([])
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)
+                ax.spines['bottom'].set_visible(False)
+                ax.spines['left'].set_visible(False)
+                
+                st.pyplot(fig)
+                
+    with crypto_tab2:
+        st.subheader("Man-in-the-Middle Attack Simulation")
+        
+        st.markdown("""
+        This simulation demonstrates a Man-in-the-Middle (MITM) attack against different key exchange protocols,
+        showing how various security properties can prevent or detect the attack.
+        """)
+        
+        # Simulation settings
+        col1, col2 = st.columns(2)
+        with col1:
+            target_protocol = st.selectbox(
+                "Target Protocol",
+                [
+                    "Basic Diffie-Hellman", 
+                    "Authenticated Diffie-Hellman",
+                    "RSA Key Exchange",
+                    "TLS 1.3 Handshake"
+                ]
+            )
+        with col2:
+            attack_sophistication = st.slider(
+                "Attacker Sophistication Level", 
+                min_value=1, 
+                max_value=5, 
+                value=3,
+                help="Higher values represent more sophisticated attacks with better resources"
+            )
+            
+        # Options for attack scenarios
+        passive_mitm = st.checkbox("Passive Eavesdropping Only", value=False)
+        
+        # Specific protocol options
+        if target_protocol == "Basic Diffie-Hellman":
+            dh_key_size = st.select_slider(
+                "DH Parameter Size",
+                options=["512-bit", "1024-bit", "2048-bit", "4096-bit"],
+                value="1024-bit"
+            )
+        elif target_protocol == "TLS 1.3 Handshake":
+            cert_validation = st.checkbox("Strict Certificate Validation", value=True)
+            
+        # Run simulation button
+        if st.button("Run MITM Simulation"):
+            # Set up simulation parameters based on selections
+            sim_params = {
+                "Basic Diffie-Hellman": {
+                    "active_defense": 1,  # No active defense
+                    "passive_defense": 1,  # No passive defense
+                    "attack_difficulty": {"512-bit": 2, "1024-bit": 3, "2048-bit": 4, "4096-bit": 5}
+                },
+                "Authenticated Diffie-Hellman": {
+                    "active_defense": 4,  # Good active defense
+                    "passive_defense": 2,  # Some passive defense
+                    "attack_difficulty": 4
+                },
+                "RSA Key Exchange": {
+                    "active_defense": 3,  # Moderate active defense
+                    "passive_defense": 3,  # Moderate passive defense
+                    "attack_difficulty": 4
+                },
+                "TLS 1.3 Handshake": {
+                    "active_defense": 5,  # Strong active defense
+                    "passive_defense": 4,  # Strong passive defense
+                    "attack_difficulty": 5
+                }
+            }
+            
+            # Calculate attack success probability
+            protocol_params = sim_params[target_protocol]
+            
+            # Get difficulty based on protocol and settings
+            if target_protocol == "Basic Diffie-Hellman":
+                difficulty = protocol_params["attack_difficulty"][dh_key_size]
+            elif target_protocol == "TLS 1.3 Handshake":
+                difficulty = protocol_params["attack_difficulty"]
+                if not cert_validation:
+                    difficulty -= 2  # Much easier without cert validation
+            else:
+                difficulty = protocol_params["attack_difficulty"]
+            
+            # Calculate success probability
+            if passive_mitm:
+                # Passive attacks are much harder
+                success_prob = max(0, min(100, (attack_sophistication - difficulty - protocol_params["passive_defense"]) * 20))
+            else:
+                # Active MITM
+                success_prob = max(0, min(100, (attack_sophistication - difficulty + 2) * 20))
+                
+                # Account for active defenses
+                if protocol_params["active_defense"] > attack_sophistication:
+                    # Attack detected
+                    success_prob = max(0, success_prob - (protocol_params["active_defense"] - attack_sophistication) * 15)
+            
+            # Display simulation results
+            st.subheader("Simulation Results")
+            
+            # Outcome and visualization
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                st.metric("Attack Success Probability", f"{int(success_prob)}%")
+                
+                if success_prob < 10:
+                    st.success("Attack Failed: Security measures effective")
+                elif success_prob < 40:
+                    st.warning("Partial Success: Limited information disclosure")
+                else:
+                    st.error("Attack Successful: Communication compromised")
+                    
+            with col2:
+                # Visualization of attack success
+                fig, ax = plt.subplots(figsize=(8, 3))
+                
+                # Success probability gauge
+                ax.barh(["Attack\nSuccess"], [success_prob], color='red', alpha=0.7)
+                ax.barh(["Attack\nSuccess"], [100-success_prob], left=[success_prob], color='green', alpha=0.7)
+                
+                # Add text labels
+                if success_prob < 30:
+                    ax.text(success_prob + 5, 0, f"Secure ({100-success_prob}%)", va='center')
+                    if success_prob > 5:
+                        ax.text(success_prob/2, 0, f"{success_prob}%", va='center', ha='center', color='white')
+                else:
+                    ax.text(success_prob/2, 0, f"Vulnerable ({success_prob}%)", va='center', ha='center', color='white' if success_prob > 20 else 'black')
+                    ax.text(success_prob + (100-success_prob)/2, 0, f"{100-success_prob}%", va='center', ha='center')
+                
+                ax.set_xlim(0, 100)
+                ax.set_xticks([0, 25, 50, 75, 100])
+                ax.set_yticks([])
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)
+                
+                st.pyplot(fig)
+            
+            # Simulation diagram
+            st.subheader("Attack Simulation Diagram")
+            
+            # Create a simple diagram showing the attack
+            alice_sends = []
+            bob_receives = []
+            eve_intercepts = []
+            events = []
+            attack_detected = False
+            
+            # Define events based on protocol
+            if target_protocol == "Basic Diffie-Hellman":
+                alice_sends = ["g^a mod p"]
+                bob_sends = ["g^b mod p"]
+                
+                if not passive_mitm:  # Active MITM
+                    eve_intercepts = ["Intercepts g^a", "Sends g^e to Bob", "Intercepts g^b", "Sends g^e to Alice"]
+                    alice_receives = ["g^e mod p (Eve's value)"]
+                    bob_receives = ["g^e mod p (Eve's value)"]
+                    
+                    events = [
+                        "Alice computes key K1 = (g^e)^a mod p",
+                        "Bob computes key K2 = (g^e)^b mod p",
+                        "Eve computes key K1 = (g^a)^e mod p with Alice",
+                        "Eve computes key K2 = (g^b)^e mod p with Bob",
+                        "Eve can decrypt all traffic between Alice and Bob"
+                    ]
+                else:  # Passive eavesdropping
+                    eve_intercepts = ["Observes g^a mod p", "Observes g^b mod p"]
+                    events = [
+                        "Eve can't directly compute g^ab from g^a and g^b",
+                        "Eve attempts cryptanalysis based on observed values"
+                    ]
+                    
+                    # If successful (based on probability)
+                    if success_prob > 50:
+                        events.append("Eve successfully derives the shared key through cryptanalysis")
+                    else:
+                        events.append("Cryptanalysis fails due to large key size")
+                        
+            elif target_protocol == "Authenticated Diffie-Hellman":
+                alice_sends = ["g^a mod p", "Sign(A, g^a)"]
+                bob_sends = ["g^b mod p", "Sign(B, g^b)"]
+                
+                if not passive_mitm:  # Active MITM
+                    eve_intercepts = ["Intercepts g^a and signature", 
+                                    "Cannot forge Alice's signature", 
+                                    "Attempts to relay with modifications"]
+                    
+                    # Check if attack is detected
+                    if attack_sophistication < protocol_params["active_defense"]:
+                        attack_detected = True
+                        events = [
+                            "Bob verifies signature with Alice's public key",
+                            "Signature verification fails due to Eve's manipulation",
+                            "Attack detected - connection terminated"
+                        ]
+                    else:
+                        events = [
+                            "Eve uses sophisticated relay techniques",
+                            "Eve manages to manipulate parts of the exchange",
+                            "Some information is compromised but not the full key"
+                        ]
+                else:  # Passive eavesdropping
+                    eve_intercepts = ["Observes all signed messages"]
+                    events = [
+                        "Eve can see public values but can't derive the private key",
+                        "Authentication prevents active attacks",
+                        "Eve attempts advanced cryptanalysis"
+                    ]
+                    
+                    if success_prob > 30:
+                        events.append("Eve finds an implementation vulnerability")
+                    else:
+                        events.append("Eve's analysis reveals no useful information")
+                
+            elif target_protocol == "RSA Key Exchange":
+                alice_sends = ["Encrypted session key"]
+                bob_sends = ["Acknowledgment"]
+                
+                if not passive_mitm:  # Active MITM
+                    eve_intercepts = ["Intercepts encrypted session key", 
+                                    "Cannot decrypt without private key", 
+                                    "Attempts oracle attack"]
+                    
+                    if success_prob > 70:
+                        events = [
+                            "Eve successfully exploits padding oracle",
+                            "Eve recovers the session key",
+                            "Communication is compromised"
+                        ]
+                    else:
+                        events = [
+                            "Oracle attack fails due to server mitigations",
+                            "Eve attempts to use other vulnerabilities",
+                            "Most communication remains secure"
+                        ]
+                else:  # Passive
+                    eve_intercepts = ["Records encrypted traffic"]
+                    events = [
+                        "Eve stores encrypted communications",
+                        "Eve cannot decrypt RSA without private key",
+                        "Data remains secure until quantum computers become viable"
+                    ]
+                    
+            elif target_protocol == "TLS 1.3 Handshake":
+                alice_sends = ["ClientHello, key_share"]
+                bob_sends = ["ServerHello, key_share, certificate"]
+                
+                if not passive_mitm:  # Active MITM
+                    eve_intercepts = ["Intercepts ClientHello", 
+                                    "Attempts to manipulate handshake"]
+                    
+                    if cert_validation:
+                        attack_detected = True
+                        events = [
+                            "TLS 1.3 downgrade protection activated",
+                            "Certificate validation fails for Eve's certificate",
+                            "Handshake aborted - attack detected"
+                        ]
+                    else:
+                        events = [
+                            "Certificate validation bypassed",
+                            "Eve establishes separate connections with Alice and Bob",
+                            "TLS session partially compromised"
+                        ]
+                else:  # Passive
+                    eve_intercepts = ["Observes encrypted handshake"]
+                    events = [
+                        "Eve sees encrypted handshake but cannot derive keys",
+                        "Perfect forward secrecy prevents decryption",
+                        "Traffic remains confidential"
+                    ]
+            
+            # Create visual representation of attack scenario
+            fig, ax = plt.subplots(figsize=(10, 6))
+            ax.axis('off')
+            
+            # Draw arrows and entities
+            alice_x, alice_y = 1, 3
+            bob_x, bob_y = 9, 3
+            eve_x, eve_y = 5, 1.5
+            
+            # Draw entities
+            ax.plot(alice_x, alice_y, 'bo', markersize=20)
+            ax.text(alice_x, alice_y+0.5, "Alice", ha='center', fontsize=12)
+            
+            ax.plot(bob_x, bob_y, 'bo', markersize=20)
+            ax.text(bob_x, bob_y+0.5, "Bob", ha='center', fontsize=12)
+            
+            if not passive_mitm:
+                # Active MITM
+                ax.plot(eve_x, eve_y, 'ro', markersize=20)
+                ax.text(eve_x, eve_y-0.5, "Eve (MITM)", ha='center', fontsize=12)
+                
+                # Draw intercepted paths
+                ax.arrow(alice_x+0.3, alice_y-0.3, eve_x-alice_x-0.6, eve_y-alice_y+0.3, 
+                        head_width=0.2, head_length=0.3, fc='gray', ec='gray', linestyle='--')
+                ax.arrow(eve_x+0.3, eve_y, bob_x-eve_x-0.6, bob_y-eve_y, 
+                        head_width=0.2, head_length=0.3, fc='gray', ec='gray', linestyle='--')
+                
+                # Return path
+                ax.arrow(bob_x-0.3, bob_y-0.3, eve_x-bob_x+0.6, eve_y-bob_y+0.3, 
+                        head_width=0.2, head_length=0.3, fc='gray', ec='gray', linestyle='--')
+                ax.arrow(eve_x-0.3, eve_y, alice_x-eve_x+0.6, alice_y-eve_y, 
+                        head_width=0.2, head_length=0.3, fc='gray', ec='gray', linestyle='--')
+                
+                # Add attack status
+                if attack_detected:
+                    ax.text(5, 4.5, "ATTACK DETECTED", color='red', ha='center', fontsize=16, fontweight='bold')
+                    # Add red X on attack path
+                    ax.plot([4, 6], [3.5, 4.5], 'r-', linewidth=3)
+                    ax.plot([6, 4], [3.5, 4.5], 'r-', linewidth=3)
+                else:
+                    if success_prob > 50:
+                        ax.text(5, 4.5, "ATTACK SUCCESSFUL", color='red', ha='center', fontsize=16, fontweight='bold')
+                    else:
+                        ax.text(5, 4.5, "ATTACK PARTIALLY MITIGATED", color='orange', ha='center', fontsize=16, fontweight='bold')
+            else:
+                # Passive eavesdropping
+                ax.plot(eve_x, eve_y, 'ro', markersize=20)
+                ax.text(eve_x, eve_y-0.5, "Eve (Passive)", ha='center', fontsize=12)
+                
+                # Direct communication
+                ax.arrow(alice_x+0.3, alice_y, bob_x-alice_x-0.6, 0, 
+                        head_width=0.2, head_length=0.3, fc='blue', ec='blue')
+                ax.arrow(bob_x-0.3, bob_y, alice_x-bob_x+0.6, 0, 
+                        head_width=0.2, head_length=0.3, fc='blue', ec='blue')
+                
+                # Eavesdropping lines
+                ax.plot([eve_x, 5], [eve_y, 3], 'r--', alpha=0.5)
+                
+                # Add attack status
+                if success_prob > 50:
+                    ax.text(5, 4.5, "PASSIVE ATTACK SUCCESSFUL", color='red', ha='center', fontsize=16, fontweight='bold')
+                else:
+                    ax.text(5, 4.5, "COMMUNICATION SECURE", color='green', ha='center', fontsize=16, fontweight='bold')
+            
+            # Show the messages exchanged
+            msg_y_pos = 3.8
+            for msg in alice_sends:
+                msg_y_pos += 0.3
+                ax.text(2.5, msg_y_pos, f"→ {msg}", fontsize=10)
+                
+            msg_y_pos = 3.8
+            for msg in bob_sends:
+                msg_y_pos += 0.3
+                ax.text(7.5, msg_y_pos, f"← {msg}", fontsize=10)
+                
+            # Show Eve's actions
+            msg_y_pos = 1
+            for msg in eve_intercepts:
+                msg_y_pos -= 0.3
+                ax.text(5, msg_y_pos, msg, fontsize=10, color='red', ha='center')
+            
+            plt.tight_layout()
+            st.pyplot(fig)
+            
+            # Event log
+            st.subheader("Attack Event Log")
+            for i, event in enumerate(events, 1):
+                st.markdown(f"{i}. {event}")
+                
+            # Technical explanation
+            st.subheader("Technical Analysis")
+            
+            if target_protocol == "Basic Diffie-Hellman":
+                st.markdown("""
+                **Vulnerability Analysis**:
+                
+                Basic Diffie-Hellman key exchange is vulnerable to man-in-the-middle attacks
+                because it doesn't authenticate the participants. An attacker can establish separate
+                key exchanges with both parties, decrypting and re-encrypting all traffic between them.
+                
+                The security relies solely on the computational difficulty of the discrete logarithm problem.
+                Larger parameters provide better security against passive attacks but do not prevent MITM.
+                """)
+                
+            elif target_protocol == "Authenticated Diffie-Hellman":
+                st.markdown("""
+                **Security Analysis**:
+                
+                Authenticated Diffie-Hellman addresses the main weakness of basic DH by adding
+                authentication, typically through digital signatures. Each party signs their DH public
+                value, allowing the other party to verify the sender's identity.
+                
+                This prevents MITM attacks as long as the signature verification is properly implemented
+                and the private signing keys remain secure. The attacker cannot forge valid signatures
+                without the private keys.
+                """)
+                
+            elif target_protocol == "RSA Key Exchange":
+                st.markdown("""
+                **Security Analysis**:
+                
+                RSA key exchange secures communication by encrypting the session key with the recipient's
+                public key. Only the holder of the private key can decrypt it.
+                
+                This approach is vulnerable to:
+                - Collection and storage of encrypted traffic for future decryption (no forward secrecy)
+                - Various side-channel and implementation attacks like padding oracles
+                - Quantum computing attacks in the future
+                
+                Modern protocols generally prefer ephemeral Diffie-Hellman for forward secrecy.
+                """)
+                
+            elif target_protocol == "TLS 1.3 Handshake":
+                st.markdown("""
+                **Security Analysis**:
+                
+                TLS 1.3 provides strong security through:
+                - Ephemeral key exchange (perfect forward secrecy)
+                - Simplified cryptographic options (removing weak algorithms)
+                - Encrypted handshake messages (protecting metadata)
+                - Downgrade attack prevention
+                - 1-RTT handshake (faster connection establishment)
+                
+                Certificate validation is critical - without proper validation, MITM attacks
+                remain possible despite the protocol's security features.
+                """)
+            
+            # Recommendations
+            st.subheader("Security Recommendations")
+            
+            if target_protocol == "Basic Diffie-Hellman":
+                st.warning("""
+                1. Never use unauthenticated Diffie-Hellman in production environments
+                2. Always combine DH with an authentication mechanism
+                3. Use DH parameters of at least 2048 bits
+                4. Consider using Elliptic Curve Diffie-Hellman for better performance and security
+                """)
+                
+            elif target_protocol == "Authenticated Diffie-Hellman":
+                st.success("""
+                1. Ensure proper validation of all signatures
+                2. Use strong signature algorithms (e.g., RSA-PSS, Ed25519)
+                3. Protect private signing keys
+                4. Consider using established protocols like TLS rather than custom implementations
+                """)
+                
+            elif target_protocol == "RSA Key Exchange":
+                st.warning("""
+                1. Consider replacing RSA key exchange with (EC)DHE for forward secrecy
+                2. If using RSA, implement proper padding (PKCS#1 v2.1 / OAEP)
+                3. Use RSA key sizes of at least 2048 bits
+                4. Implement countermeasures against timing and oracle attacks
+                """)
+                
+            elif target_protocol == "TLS 1.3 Handshake":
+                st.success("""
+                1. Always enable and enforce strict certificate validation
+                2. Use Certificate Transparency (CT) to detect misissued certificates
+                3. Consider using certificate pinning for high-value applications
+                4. Keep TLS libraries updated to patch implementation vulnerabilities
+                5. Implement HSTS to prevent downgrade to HTTP
+                """)
+                
+    with crypto_tab3:
+        st.subheader("Protocol Comparison")
+        
+        st.markdown("""
+        Compare different cryptographic protocols based on their security properties,
+        performance characteristics, and suitability for different use cases.
+        """)
+        
+        # Select protocols to compare
+        protocols_to_compare = st.multiselect(
+            "Select Protocols to Compare",
+            [
+                "TLS 1.2", 
+                "TLS 1.3", 
+                "SSH",
+                "Signal Protocol", 
+                "IPsec",
+                "WireGuard",
+                "OpenVPN",
+                "Noise Protocol"
+            ],
+            default=["TLS 1.2", "TLS 1.3"]
+        )
+        
+        # Protocol comparison data
+        protocol_data = {
+            "TLS 1.2": {
+                "Key Exchange": "RSA or DHE/ECDHE",
+                "Forward Secrecy": "Optional (with DHE/ECDHE)",
+                "Authent
+
+
 st.markdown("---")
 st.caption("Built with ❤️ using PyCryptodome, Streamlit, and Gemini AI.")
