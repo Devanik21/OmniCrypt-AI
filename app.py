@@ -5219,12 +5219,7 @@ elif feature == "🛡️ Cryptographic Protocol Analyzer":
         }
     }
 
-    if protocols_to_compare:
-        selected_data = {proto: protocol_data[proto] for proto in protocols_to_compare}
-        df = pd.DataFrame(selected_data).T
-        st.dataframe(df, use_container_width=True)
-    else:
-        st.warning("Please select at least one protocol to see the comparison ✨")
+
 
 
 
