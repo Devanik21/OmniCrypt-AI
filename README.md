@@ -297,9 +297,11 @@ Supported hashes:
 
 HMAC construction:
 
-[
-\text{HMAC}_k(m) = H((k \oplus opad) || H((k \oplus ipad) || m))
-]
+$$
+\mathrm{HMAC}_k(m)
+=
+H\big((k \oplus \mathrm{opad}) \,\|\, H((k \oplus \mathrm{ipad}) \,\|\, m)\big)
+$$
 
 Ensures message integrity and authenticity.
 
